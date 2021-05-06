@@ -1,2 +1,5 @@
 # Use Linux line endings, since we're building a Linux VM.
 * text eol=lf
+data/Mate_M013_4K.png -crlf
+data/Nordic-darker.tar.xz -crlf
+data/Zafiro-Icons.tar.xz -crlf
