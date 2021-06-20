@@ -41,6 +41,9 @@ else
 	echo "auto-cpufreq already installed -> SKIP"
 fi
 
+# SSH
+[ -f $HOME/.ssh/id_ed25519 ] && ssh-add -k $HOME/.ssh/id_ed25519
+
 # 24bits color tests
 # https://gist.github.com/XVilka/8346728
 curl https://gist.githubusercontent.com/lifepillar/09a44b8cf0f9397465614e622979107f/raw/24-bit-color.sh | bash

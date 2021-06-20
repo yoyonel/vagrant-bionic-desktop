@@ -51,7 +51,9 @@ figlet "APT: Install"
 sudo apt-get -y install \
 	locate wget curl htop \
 	git git-extras \
-	moreutils
+	moreutils \
+	libc++1 \
+	time
 
 figlet "COMMAND-NOT-FOUND"
 if ! command_exists command-not-found; then
@@ -149,8 +151,8 @@ figlet "TIG"
 figlet "GitHub cli"
 if ! command_exists gh; then
 	# https://github.com/cli/cli/releases
-	wget -q https://github.com/cli/cli/releases/download/v1.9.2/gh_1.9.2_linux_amd64.deb -O /tmp/gh_1.9.2_linux_amd64.deb
-	sudo dpkg -i /tmp/gh_1.9.2_linux_amd64.deb
+	wget -q https://github.com/cli/cli/releases/download/v1.11.0/gh_1.11.0_linux_amd64.deb -O /tmp/gh_1.11.0_linux_amd64.deb
+	sudo dpkg -i /tmp/gh_1.11.0_linux_amd64.deb
 else
 	echo "github cli already installed -> SKIP"
 fi
@@ -207,6 +209,10 @@ fi
 if [ ! -d ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel9k ]; then
 	git clone https://github.com/bhilburn/powerlevel9k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel9k
 fi
+
+# DirEnv
+figlet "DIRENV"
+! command_exists direnv && curl -sfL https://direnv.net/install.sh | bash
 
 figlet "TMUX"
 sudo apt install -y tmux
@@ -337,11 +343,12 @@ else
 fi
 
 figlet "PARALLEL"
-if ! command_exists parallel; then
-	sudo apt-get -y install parallel
-else
-	echo "parallel already installed -> SKIP"
-fi
+# if ! command_exists parallel; then
+# need `parallel` from parallel package not from more-utils
+sudo apt-get -y install parallel
+# else
+# 	echo "parallel already installed -> SKIP"
+# fi
 
 # Audio & Video
 #                    _ _                 __      ___     _
@@ -466,10 +473,30 @@ fi
 
 figlet "DISCORD"
 if ! command_exists discord; then
-	wget -q "https://discord.com/api/download?platform=linux&format=deb" -O /tmp/discord.deb
-	sudo dpkg -i /tmp/discord.deb || true
-	sudo apt-get -y --fix-broken install
-	sudo dpkg -i /tmp/discord.deb
+	# APPIMAGE
+	sudo wget -q "https://github.com/srevinsaju/discord-appimage/releases/download/canary/Discord-0.0.25-x86_64.AppImage" -O /usr/local/bin/Discord-0.0.25-x86_64.AppImage
+	sudo chmod +x /usr/local/bin/Discord-0.0.25-x86_64.AppImage
+
+	sudo ln -s /usr/local/bin/Discord-0.0.25-x86_64.AppImage /usr/local/bin/discord
+
+	mkdir -p $HOME/.local/share/applications
+	if [ ! -f $HOME/.local/share/applications/discord.desktop ]; then
+		cat >$HOME/.local/share/applications/discord.desktop <<EOL
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Version=0.0.25
+Type=Application
+Categories=Network;InstantMessaging;
+Terminal=false
+Icon=$HOME/.local/share/icons/discord-icon.png
+Icon[fr_FR]=$HOME/.local/share/icons/discord-icon.png
+Name[fr_FR]=Discord
+Exec=/usr/local/bin/discord
+Comment[fr_FR]=
+Name=Discord
+Comment=
+EOL
+	fi
 else
 	echo "discord already installed -> SKIP"
 fi
@@ -477,39 +504,6 @@ fi
 # TODO: change strategy to install this application (maybe AppImage)
 # figlet "SLACK"
 # if ! command_exists slack; then
-# 	# wget -q https://github.com/jcolag/SlackBackup/releases/download/v1.2/slack-backup_1.0.0_amd64.deb -O /tmp/slack-desktop-4.15.0-amd64.deb
-# 	# sudo dpkg -i /tmp/slack-desktop-4.15.0-amd64.deb
-
-# 	# sudo wget -q "https://github.com/jcolag/SlackBackup/releases/download/v1.2/slack-backup-1.0.0-x86_64.AppImage" -O /usr/local/bin/slack-backup-1.0.0-x86_64.AppImage
-# 	# sudo chmod +x /usr/local/bin/slack-backup-1.0.0-x86_64.AppImage
-
-# 	#     if [ ! -f $HOME/.local/share/icons/slack_icon.png ]; then
-# 	#         if [ ! -d $HOME/.local/share/icons ]; then
-# 	#             mkdir -p $HOME/.local/share/icons
-# 	#         fi
-# 	#         wget -q "https://upload.wikimedia.org/wikipedia/commons/7/76/Slack_Icon.png" -O $HOME/.local/share/icons/slack_icon.png
-# 	#     fi
-
-# 	#     mkdir -p $HOME/.local/share/applications
-# 	#     if [ ! -f $HOME/.local/share/applications/slack.desktop ]; then
-# 	#         cat >$HOME/.local/share/applications/slack.desktop <<EOL
-# 	# #!/usr/bin/env xdg-open
-# 	# [Desktop Entry]
-# 	# Version=1.2.0
-# 	# Type=Application
-# 	# Categories=Network;
-# 	# Terminal=false
-# 	# Icon=$HOME/.local/share/icons/slack_icon.png
-# 	# Icon[fr_FR]=$HOME/.local/share/icons/slack_icon.png
-# 	# Name[fr_FR]=Slack
-# 	# Exec=/usr/local/bin/slack
-# 	# Comment[fr_FR]=Slack
-# 	# Name=Slack
-# 	# Comment=Slack
-# 	# EOL
-# 	#     fi
-# 	#     sudo ln -s /usr/local/bin/slack-backup-1.0.0-x86_64.AppImage /usr/local/bin/slack
-
 # 	# https://slack.com/intl/fr-fr/downloads/linux
 # 	wget -q https://downloads.slack-edge.com/linux_releases/slack-desktop-4.16.0-amd64.deb -O /tmp/slack-desktop-4.16.0-amd64.deb
 # 	sudo dpkg -i /tmp/slack-desktop-4.16.0-amd64.deb
@@ -531,7 +525,10 @@ figlet "LYNX"
 
 figlet "SHADOW"
 if ! command_exists ShadowBeta.AppImage; then
-	sudo apt-get install -y libva-wayland2
+	# https://nicolasguilloux.github.io/blade-shadow-beta/setup
+	sudo apt-get install -y libva-wayland2 intel-media-va-driver-non-free
+	# https://nicolasguilloux.github.io/blade-shadow-beta/issues#the-drirc-fix
+	curl https://gitlab.com/NicolasGuilloux/shadow-live-os/raw/arch-master/airootfs/etc/drirc -o ~/.drirc
 	if [ ! -f /usr/local/bin/ShadowBeta.AppImage ]; then
 		# https://appimage.github.io/Shadow/
 		sudo wget -q -L "https://update.shadow.tech/launcher/preprod/linux/ubuntu_18.04/ShadowBeta.AppImage" -O /usr/local/bin/ShadowBeta.AppImage
@@ -640,7 +637,21 @@ figlet "DCONF"
 #
 figlet "🐳 DOCKER"
 if ! command_exists docker; then
-	wget -q -O - https://get.docker.com/ | sh - >/dev/null
+	# wget -q -O - https://get.docker.com/ | sh - >/dev/null
+
+	# https://docs.docker.com/engine/install/debian/
+	sudo apt-get -y install \
+		apt-transport-https \
+		ca-certificates \
+		curl \
+		gnupg \
+		lsb-release
+	curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --y --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+	echo \
+		"deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
+  		$(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
+	sudo apt-get update && sudo apt-get -y install docker-ce docker-ce-cli containerd.io
+	#
 	sudo usermod -aG docker $USER
 else
 	echo "docker already installed -> SKIP"
@@ -666,24 +677,24 @@ fi
 
 figlet "VAGRANT"
 if ! command_exists vagrant; then
-	sudo apt-get -y install software-properties-common
-	curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
-	sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
-	sudo apt-get update && sudo sudo apt-get -y install vagrant
+	# https://www.vagrantup.com/downloads
+	[ ! -f /tmp/vagrant_2.2.16_x86_64.deb ] && wget -q https://releases.hashicorp.com/vagrant/2.2.16/vagrant_2.2.16_x86_64.deb -O /tmp/vagrant_2.2.16_x86_64.deb
+	sudo dpkg -i /tmp/vagrant_2.2.16_x86_64.deb
 else
 	echo "vagrant already installed -> SKIP"
 fi
 
 figlet "VIRTUALBOX"
 if ! command_exists virtualbox; then
-	wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -
-	wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | sudo apt-key add -
-	sudo apt-get -y install software-properties-common
-	sudo add-apt-repository "deb [arch=amd64] http://download.virtualbox.org/virtualbox/debian $(lsb_release -cs) contrib"
-	sudo apt-get update && sudo apt-get -y install virtualbox-6.1
-	wget -q https://download.virtualbox.org/virtualbox/6.1.22/Oracle_VM_VirtualBox_Extension_Pack-6.1.22.vbox-extpack -O /tmp/Oracle_VM_VirtualBox_Extension_Pack-6.1.22.vbox-extpack
-	# https://www.howtogeek.com/415535/how-to-use-the-yes-command-on-linux/
-	yes | sudo VBoxManage extpack install /tmp/Oracle_VM_VirtualBox_Extension_Pack-6.1.22.vbox-extpack >/dev/null
+	sudo apt-get -y install build-essential linux-headers-amd64
+	cd /tmp
+	wget https://download.virtualbox.org/virtualbox/6.1.22/VirtualBox-6.1.22-144080-Linux_amd64.run
+	chmod +x VirtualBox-6.1.22-144080-Linux_amd64.run
+	sudo ./VirtualBox-6.1.22-144080-Linux_amd64.run
+	vboxversion=$(wget -qO - https://download.virtualbox.org/virtualbox/LATEST.TXT)
+	sudo vboxmanage extpack install --replace Oracle_VM_VirtualBox_Extension_Pack-${vboxversion}.vbox-extpack
+	yes | sudo vboxmanage extpack install --replace Oracle_VM_VirtualBox_Extension_Pack-${vboxversion}.vbox-extpack >/dev/null
+	sudo usermod -aG vboxusers $USER
 else
 	echo "virtualbox already installed -> SKIP"
 fi
@@ -706,7 +717,8 @@ fi
 
 figlet "FISADEV"
 if [ ! -f $HOME/.config/nvim/init.vim ]; then
-	sudo pip3 install pynvim flake8 pylint isort
+	# Enabling the Python 3 Provider
+	sudo pip3 install pynvim flake8 pylint isort neovim​
 
 	mkdir -p $HOME/.config/nvim/
 	echo "download config.vim from fisadev ..."
@@ -734,6 +746,22 @@ if [ ! -f /opt/pycharm/bin/pycharm.sh ]; then
 	curl -fsSL https://download.jetbrains.com/python/pycharm-professional-2021.1.1.tar.gz -o /tmp/pycharm-professional-2021.1.1.tar.gz
 	sudo mkdir -p /opt/pycharm
 	sudo tar --strip-components=1 -xzf /tmp/pycharm-professional-2021.1.1.tar.gz -C /opt/pycharm
+
+	ln -s $(realpath bin/pycharm.sh) $HOME/.local/bin/.
+
+	cat >$HOME/.local/share/applications/pycharm.desktop <<EOL
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Version=2021.1.1
+Type=Application
+Name=PyCharm
+Icon=/opt/pycharm/bin/pycharm.png
+Exec="/opt/pycharm/bin/pycharm.sh" %f
+Comment=The Drive to Develop
+Categories=Development;IDE;
+Terminal=false
+StartupWMClass=jetbrains-pycharm
+EOL
 else
 	echo "pycharm alread installed -> SKIP"
 fi
