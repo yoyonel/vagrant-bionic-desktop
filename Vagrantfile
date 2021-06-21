@@ -1,6 +1,9 @@
 Vagrant.configure("2") do |config|
   # https://app.vagrantup.com/generic/boxes/debian10
-  config.vm.box = "generic/debian10"
+  # config.vm.box = "generic/debian10"
+  # https://app.vagrantup.com/boxomatic/boxes/debian-11
+  config.vm.box = "boxomatic/debian-11"
+  
   # Optional - enlarge disk (will also convert the format from VMDK to VDI):l
   # config.disksize.size = "50GB"
 
@@ -37,7 +40,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision "file", source: "dotfile/.profile", destination: "/home/vagrant/.profile"
   config.vm.provision "file", source: "dotfile/.gitconfig", destination: "/home/vagrant/.gitconfig"
   config.vm.provision "file", source: "dotfile/.zshrc", destination: "/home/vagrant/.zshrc"
-  config.vm.provision "file", source: "dotfile/.tmux.conf", destination: "/home/vagrant/.tmux.conf"  
+  config.vm.provision "file", source: "dotfile/.tmux.conf.local", destination: "/home/vagrant/.tmux.conf.local"  
   config.vm.provision "file", source: "dotfile/.powerlevel9k", destination: "/home/vagrant/.powerlevel9k"
   config.vm.provision "file", source: "dotfile/alacritty.yml", destination: "/home/vagrant/.config/alacritty/alacritty.yml"
   config.vm.provision "file", source: "dotfile/dconf.ini", destination: "/home/vagrant/.config/dconf/dconf.ini"

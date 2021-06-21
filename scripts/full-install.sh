@@ -218,6 +218,12 @@ figlet "TMUX"
 sudo apt install -y tmux
 # bc: use by tmux-plugins/tmux-docker
 ! command_exists bc && sudo apt-get -y install tmux bc
+if [ ! -f "$HOME/.tmux.conf" ]; then
+	cd
+	git clone https://github.com/gpakosz/.tmux.git
+	ln -s -f .tmux/.tmux.conf
+	cp .tmux/.tmux.conf.local .
+fi
 if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
 	figlet "TMUX-PLUGINS"
 	git clone https://github.com/tmux-plugins/tpm $HOME/.tmux/plugins/tpm
@@ -688,11 +694,11 @@ figlet "VIRTUALBOX"
 if ! command_exists virtualbox; then
 	sudo apt-get -y install build-essential linux-headers-amd64
 	cd /tmp
-	wget https://download.virtualbox.org/virtualbox/6.1.22/VirtualBox-6.1.22-144080-Linux_amd64.run
+	wget -q https://download.virtualbox.org/virtualbox/6.1.22/VirtualBox-6.1.22-144080-Linux_amd64.run
 	chmod +x VirtualBox-6.1.22-144080-Linux_amd64.run
 	sudo ./VirtualBox-6.1.22-144080-Linux_amd64.run
 	vboxversion=$(wget -qO - https://download.virtualbox.org/virtualbox/LATEST.TXT)
-	sudo vboxmanage extpack install --replace Oracle_VM_VirtualBox_Extension_Pack-${vboxversion}.vbox-extpack
+	wget -q "https://download.virtualbox.org/virtualbox/${vboxversion}/Oracle_VM_VirtualBox_Extension_Pack-${vboxversion}.vbox-extpack"
 	yes | sudo vboxmanage extpack install --replace Oracle_VM_VirtualBox_Extension_Pack-${vboxversion}.vbox-extpack >/dev/null
 	sudo usermod -aG vboxusers $USER
 else
@@ -711,14 +717,14 @@ figlet "NEOVIM"
 if ! command_exists nvim; then
 	# https://vim.fisadev.com/
 	sudo apt-get -y install \
-		git curl python3-pip exuberant-ctags ack-grep \
-		neovim
+		git curl python3-pip exuberant-ctags ack-grep neovim
 fi
 
 figlet "FISADEV"
 if [ ! -f $HOME/.config/nvim/init.vim ]; then
 	# Enabling the Python 3 Provider
-	sudo pip3 install pynvim flake8 pylint isort neovim​
+	sudo pip3 install \
+		pynvim flake8 pylint isort
 
 	mkdir -p $HOME/.config/nvim/
 	echo "download config.vim from fisadev ..."
@@ -747,7 +753,7 @@ if [ ! -f /opt/pycharm/bin/pycharm.sh ]; then
 	sudo mkdir -p /opt/pycharm
 	sudo tar --strip-components=1 -xzf /tmp/pycharm-professional-2021.1.1.tar.gz -C /opt/pycharm
 
-	ln -s $(realpath bin/pycharm.sh) $HOME/.local/bin/.
+	ln -s $(realpath /opt/pycharm/bin/pycharm.sh) $HOME/.local/bin/.
 
 	cat >$HOME/.local/share/applications/pycharm.desktop <<EOL
 #!/usr/bin/env xdg-open
