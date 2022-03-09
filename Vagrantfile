@@ -3,6 +3,8 @@ Vagrant.configure("2") do |config|
   # config.vm.box = "generic/debian10"
   # https://app.vagrantup.com/boxomatic/boxes/debian-11
   config.vm.box = "boxomatic/debian-11"
+  # config.vm.box_version = "20210609.0.1"
+  config.vm.box_version = "20220301.0.1"
   
   # Optional - enlarge disk (will also convert the format from VMDK to VDI):l
   # config.disksize.size = "50GB"

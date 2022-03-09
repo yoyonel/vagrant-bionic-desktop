@@ -104,10 +104,10 @@ if [ ! -d $HOME/.pyenv ]; then
 		make build-essential libssl-dev zlib1g-dev libbz2-dev \
 		libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
 		xz-utils tk-dev libffi-dev liblzma-dev
-	# if [ -d $HOME/.pyenv ]; then
-	#     echo "$HOME/.pyenv exist by pyenv can't be found ! Maybe a problem in setting stage ..."
-	#     rm -rf $HOME/.pyenv
-	# fi
+	if [ -d $HOME/.pyenv ]; then
+		echo "$HOME/.pyenv exist by pyenv can't be found ! Maybe a problem in setting stage ..."
+		rm -rf $HOME/.pyenv
+	fi
 	curl -s https://pyenv.run | zsh
 else
 	echo "pyenv already installed => SKIP"
@@ -430,7 +430,7 @@ figlet "MPV"
 
 figlet "SPOTIFY"
 if ! command_exists spotify; then
-	curl -sS https://download.spotify.com/debian/pubkey_0D811D58.gpg | sudo apt-key add -
+	curl -sS https://download.spotify.com/debian/pubkey_5E3C45D7B312C643.gpg | sudo apt-key add -
 	if [ ! -f /etc/apt/sources.list.d/spotify.list ]; then
 		echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
 	fi
@@ -480,7 +480,7 @@ fi
 figlet "DISCORD"
 if ! command_exists discord; then
 	# APPIMAGE
-	sudo wget -q "https://github.com/srevinsaju/discord-appimage/releases/download/canary/Discord-0.0.25-x86_64.AppImage" -O /usr/local/bin/Discord-0.0.25-x86_64.AppImage
+	sudo wget -q "https://github.com/srevinsaju/discord-appimage/releases/download/stable/Discord-0.0.17-x86_64.AppImage" -O /usr/local/bin/Discord-0.0.25-x86_64.AppImage
 	sudo chmod +x /usr/local/bin/Discord-0.0.25-x86_64.AppImage
 
 	sudo ln -s /usr/local/bin/Discord-0.0.25-x86_64.AppImage /usr/local/bin/discord
@@ -529,24 +529,24 @@ fi
 figlet "LYNX"
 ! command_exists lynx && sudo apt-get -y install lynx
 
-figlet "SHADOW"
-if ! command_exists ShadowBeta.AppImage; then
-	# https://nicolasguilloux.github.io/blade-shadow-beta/setup
-	sudo apt-get install -y libva-wayland2 intel-media-va-driver-non-free
-	# https://nicolasguilloux.github.io/blade-shadow-beta/issues#the-drirc-fix
-	curl https://gitlab.com/NicolasGuilloux/shadow-live-os/raw/arch-master/airootfs/etc/drirc -o ~/.drirc
-	if [ ! -f /usr/local/bin/ShadowBeta.AppImage ]; then
-		# https://appimage.github.io/Shadow/
-		sudo wget -q -L "https://update.shadow.tech/launcher/preprod/linux/ubuntu_18.04/ShadowBeta.AppImage" -O /usr/local/bin/ShadowBeta.AppImage
-	fi
-	sudo chmod +x /usr/local/bin/ShadowBeta.AppImage
-	sudo sysctl -w kernel.unprivileged_userns_clone=1
-	if [ ! -f /etc/sysctl.d/99-shadow.conf ]; then
-		echo "kernel.unprivileged_userns_clone=1" | sudo tee /etc/sysctl.d/99-shadow.conf
-	fi
-else
-	echo "ShadowBeta.AppImage already installed -> SKIP"
-fi
+# figlet "SHADOW"
+# if ! command_exists ShadowBeta.AppImage; then
+# 	# https://nicolasguilloux.github.io/blade-shadow-beta/setup
+# 	sudo apt-get install -y libva-wayland2 intel-media-va-driver-non-free
+# 	# https://nicolasguilloux.github.io/blade-shadow-beta/issues#the-drirc-fix
+# 	curl https://gitlab.com/NicolasGuilloux/shadow-live-os/raw/arch-master/airootfs/etc/drirc -o ~/.drirc
+# 	if [ ! -f /usr/local/bin/ShadowBeta.AppImage ]; then
+# 		# https://appimage.github.io/Shadow/
+# 		sudo wget -q -L "https://update.shadow.tech/launcher/preprod/linux/ubuntu_18.04/ShadowBeta.AppImage" -O /usr/local/bin/ShadowBeta.AppImage
+# 	fi
+# 	sudo chmod +x /usr/local/bin/ShadowBeta.AppImage
+# 	sudo sysctl -w kernel.unprivileged_userns_clone=1
+# 	if [ ! -f /etc/sysctl.d/99-shadow.conf ]; then
+# 		echo "kernel.unprivileged_userns_clone=1" | sudo tee /etc/sysctl.d/99-shadow.conf
+# 	fi
+# else
+# 	echo "ShadowBeta.AppImage already installed -> SKIP"
+# fi
 
 # Utilities
 #  _    _ _   _ _ _ _   _
@@ -697,7 +697,8 @@ if ! command_exists virtualbox; then
 	wget -q https://download.virtualbox.org/virtualbox/6.1.22/VirtualBox-6.1.22-144080-Linux_amd64.run
 	chmod +x VirtualBox-6.1.22-144080-Linux_amd64.run
 	sudo ./VirtualBox-6.1.22-144080-Linux_amd64.run
-	vboxversion=$(wget -qO - https://download.virtualbox.org/virtualbox/LATEST.TXT)
+	# vboxversion=$(wget -qO - https://download.virtualbox.org/virtualbox/LATEST.TXT)
+	vboxversion="6.1.22"
 	wget -q "https://download.virtualbox.org/virtualbox/${vboxversion}/Oracle_VM_VirtualBox_Extension_Pack-${vboxversion}.vbox-extpack"
 	yes | sudo vboxmanage extpack install --replace Oracle_VM_VirtualBox_Extension_Pack-${vboxversion}.vbox-extpack >/dev/null
 	sudo usermod -aG vboxusers $USER
