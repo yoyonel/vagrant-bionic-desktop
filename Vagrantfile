@@ -1,9 +1,7 @@
 Vagrant.configure("2") do |config|
-  # https://app.vagrantup.com/generic/boxes/debian10
-  config.vm.box = "generic/debian10"
-  # Optional - enlarge disk (will also convert the format from VMDK to VDI):l
-  # config.disksize.size = "50GB"
-
+  # https://app.vagrantup.com/archlinux/boxes/archlinux
+  config.vm.box = "archlinux/archlinux"
+    
   # # https://github.com/dotless-de/vagrant-vbguest/issues/335
   # if Vagrant.has_plugin?("vagrant-vbguest")
   #   config.vbguest.auto_update = false
@@ -25,21 +23,5 @@ Vagrant.configure("2") do |config|
     vb.customize ['modifyvm', :id, '--clipboard', 'bidirectional', '--graphicscontroller', 'vmsvga']
   end
 
-  # UI Ressources: Themes, Wallpapers
-  config.vm.provision "file", source: "data/Mate_M013_4K.png", destination: ".local/share/wallpapers/Mate_M013_4K.png"
-  config.vm.provision "file", source: "data/Nordic-darker.tar.xz", destination: "/tmp/Nordic-darker.tar.xz"
-  config.vm.provision "file", source: "data/Zafiro-Icons.tar.xz", destination: "/tmp/Zafiro-Icons.tar.xz"
-  #
-  config.vm.provision "file", source: "scripts/.post-init.sh", destination: "/home/vagrant/.post-init.sh"
-  #
-  config.vm.provision "shell", privileged: false, path: "scripts/full-install.sh"  
-  #
-  config.vm.provision "file", source: "dotfile/.profile", destination: "/home/vagrant/.profile"
-  config.vm.provision "file", source: "dotfile/.gitconfig", destination: "/home/vagrant/.gitconfig"
-  config.vm.provision "file", source: "dotfile/.zshrc", destination: "/home/vagrant/.zshrc"
-  config.vm.provision "file", source: "dotfile/.tmux.conf", destination: "/home/vagrant/.tmux.conf"  
-  config.vm.provision "file", source: "dotfile/.powerlevel9k", destination: "/home/vagrant/.powerlevel9k"
-  config.vm.provision "file", source: "dotfile/alacritty.yml", destination: "/home/vagrant/.config/alacritty/alacritty.yml"
-  config.vm.provision "file", source: "dotfile/dconf.ini", destination: "/home/vagrant/.config/dconf/dconf.ini"
-  config.vm.provision "file", source: "dotfile/rc.conf", destination: "/home/vagrant/.config/ranger/rc.conf"
+  config.vm.provision "shell", privileged: false, path: "scripts/full-install.sh"
 end
