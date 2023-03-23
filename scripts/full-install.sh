@@ -9,11 +9,16 @@ package_installed() {
 	dpkg-query --list | grep -i "$@" >/dev/null 2>&1
 }
 
-# Figlet
-! command_exists figlet && sudo apt-get -y install figlet
-
 # [https://serverfault.com/a/670688](dpkg-reconfigure: unable to re-open stdin: No file or directory)
 export DEBIAN_FRONTEND=noninteractive
+
+sudo rm -rf /var/lib/apt/lists/*
+sudo apt-get clean
+# https://www.appsloveworld.com/docker/100/105/how-to-fix-hash-sum-mismatch-in-docker-on-mac
+sudo apt-get update -o Acquire::CompressionTypes::Order::=gz
+
+# Figlet
+! command_exists figlet && sudo apt-get -y install figlet
 
 # https://askubuntu.com/a/1107071
 # http://manpages.ubuntu.com/manpages/xenial/en/man5/apt.conf.5.html
@@ -30,11 +35,11 @@ sudo sh -c "echo 'APT::Acquire::Retries "3";' > /etc/apt/apt.conf.d/80-retries"
 #
 ##########################
 figlet "APT: FULL"
-sudo apt-get -y --fix-broken install
-sudo apt-get update
-sudo apt-get -y upgrade
-sudo apt-get -y dist-upgrade
-sudo apt-get -y autoremove --purge
+sudo apt-get -y --fix-broken install && \
+sudo apt-get update && \
+sudo apt-get -y upgrade && \
+sudo apt-get -y dist-upgrade && \
+sudo apt-get -y autoremove --purge && \
 sudo apt-get -y autoclean
 
 # COMMON
@@ -231,6 +236,7 @@ fi
 
 figlet "RANGER"
 # ranger: Console file manager with VI key bindings.
+# https://www.linuxfordevices.com/tutorials/linux/ranger-file-manager
 if ! command_exists ranger; then
 	sudo apt-get -y install ranger
 else
@@ -238,6 +244,9 @@ else
 fi
 
 figlet "FZF"
+# TODO: ne plus passer par apt pour l'install ça semble bugger pour l'historique
+# préférer un clone du répo et installation des binaires
+# ou un download/install d'une release binaire
 ! command_exists fzf && sudo apt-get -y install fzf
 
 figlet "LSD"
@@ -323,13 +332,15 @@ figlet "NMAP"
 figlet "MONITORING"
 # dnsutils -> dig: DNS Lookup utility
 # net-tools -> netstat: Displays network-related information such as open connections, open socket ports, etc.
+# glances: E: Unable to locate package glances
+# atop: Linux system and process monitor.More information: https://manned.org/atop.
 sudo apt-get -y install \
 	htop \
-	glances \
 	iotop \
 	bmon \
 	net-tools \
-	dnsutils
+	dnsutils \
+	atop
 if ! command_exists gotop; then
 	if [ ! -d "/tmp/gotop" ]; then
 		git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop
@@ -341,8 +352,11 @@ if ! command_exists gotop; then
 fi
 
 figlet "SPEEDTEST"
-if ! command_exists speedtest; then
+# TODO: https://www.speedtest.net/apps/cli
+if false and ! command_exists speedtest; then
 	curl -s https://install.speedtest.net/app/cli/install.deb.sh | sudo bash
+	# E: Unable to locate package speedtest
+	#   The following signatures couldn't be verified because the public key is not available: NO_PUBKEY 8E61C2AB9A6D1557
 	sudo apt-get -y install speedtest
 else
 	echo "speedtest already installed -> SKIP"
@@ -429,9 +443,12 @@ figlet "MPV"
 ! command_exists mpv && sudo apt-get -y install mpv
 
 figlet "SPOTIFY"
-if ! command_exists spotify; then
-	curl -sS https://download.spotify.com/debian/pubkey_5E3C45D7B312C643.gpg | sudo apt-key add -
-	if [ ! -f /etc/apt/sources.list.d/spotify.list ]; then
+# FIX: problem avec l'idempotence de l'installation 
+if false and ! command_exists spotify; then
+    if [ ! -f /etc/apt/trusted.gpg.d/spotify.gpg ]; then
+		# https://www.spotify.com/us/download/linux/
+		curl -sS https://download.spotify.com/debian/pubkey_7A3A762FAFD4A51F.gpg | sudo gpg --dearmor --yes -o /etc/apt/trusted.gpg.d/spotify.gpg
+		# TODO: grep sur le motif avant d'insérer
 		echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
 	fi
 	sudo apt-get update && sudo apt-get install -y spotify-client
@@ -459,6 +476,7 @@ if ! command_exists brave-browser; then
 	sudo apt-get -y install apt-transport-https curl
 	sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
 	echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main" | sudo tee /etc/apt/sources.list.d/brave-browser-release.list
+	# sudo rm -rf /var/lib/apt/lists/*
 	sudo apt-get update &&
 		sudo apt-get -y install brave-browser
 else
@@ -474,13 +492,18 @@ if ! command_exists signal-desktop; then
 		echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/signal-desktop-keyring.gpg] https://updates.signal.org/desktop/apt xenial main' |
 			sudo tee -a /etc/apt/sources.list.d/signal-xenial.list
 	fi
+	# sudo rm -rf /var/lib/apt/lists/*
 	sudo apt-get update && sudo apt-get -y install signal-desktop
 fi
 
 figlet "DISCORD"
-if ! command_exists discord; then
+if false and ! command_exists discord; then
+	# FIX: can't download the Appimage !
 	# APPIMAGE
-	sudo wget -q "https://github.com/srevinsaju/discord-appimage/releases/download/stable/Discord-0.0.17-x86_64.AppImage" -O /usr/local/bin/Discord-0.0.25-x86_64.AppImage
+	# + sudo wget -q https://github.com/srevinsaju/discord-appimage/releases/download/stable/Discord-0.0.17-x86_64.AppImage -O /usr/local/bin/Discord-0.0.25-x86_64.AppImage
+    # user@debian:~/vagrant-bionic-desktop$ echo $?
+    # 8
+	 # sudo wget -q "https://github.com/srevinsaju/discord-appimage/releases/download/stable/Discord-0.0.17-x86_64.AppImage" -O /usr/local/bin/Discord-0.0.25-x86_64.AppImage
 	sudo chmod +x /usr/local/bin/Discord-0.0.25-x86_64.AppImage
 
 	sudo ln -s /usr/local/bin/Discord-0.0.25-x86_64.AppImage /usr/local/bin/discord
@@ -560,6 +583,7 @@ figlet "Enpass"
 if [ ! -f /opt/enpass/Enpass ]; then
 	! grep "https://apt.enpass.io/" /etc/apt/sources.list && echo "deb https://apt.enpass.io/ stable main" | sudo tee -a /etc/apt/sources.list >/dev/null
 	wget -q -O - https://apt.enpass.io/keys/enpass-linux.key | sudo apt-key add -
+	# sudo rm -rf /var/lib/apt/lists/*
 	sudo apt-get update && sudo apt-get -y install enpass
 else
 	echo "enpass: skip"
@@ -580,7 +604,7 @@ else
 fi
 
 figlet "REDSHIT"
-! command_exists redshift && sudo apt-get -y install redshift redshift-gtk
+! command_exists redshift && sudo apt-get update && sudo apt-get -y install redshift redshift-gtk
 
 # Graphics & Photography
 #   _____                 _     _                     _____  _           _                              _
@@ -607,17 +631,18 @@ figlet "FLAMESHOT"
 #
 figlet "THEME: NORDIC"
 if [ ! -d /usr/share/themes/Nordic-darker ]; then
-	sudo mkdir -p /usr/share/themes/Nordic-darker
+	sudo mkdir -p /usr/share/themes/
 	sudo tar -xf /tmp/Nordic-darker.tar.xz -C /usr/share/themes
 fi
 
 figlet "ICONS: ZAFIRO"
 if [ ! -d /usr/share/icons/Zafiro-Icons ]; then
-	sudo mkdir -p /usr/share/icons/Zafiro-Icons
-	# sudo tar -xf /tmp/Zafiro-Icons.tar.xz -C /usr/share/icons
+	sudo mkdir -p /usr/share/icons
+	sudo tar -xf /tmp/Zafiro-Icons.tar.xz -C /usr/share/icons
 fi
 
 figlet "WALLPAPER"
+# TODO: écrire le test de savoir si c'est déjà en place
 ln -sf "$HOME/.local/share/wallpapers/Mate_M013_4K.png" "$HOME/.local/share/wallpapers/default.png"
 
 # DCONF
@@ -656,6 +681,7 @@ if ! command_exists docker; then
 	echo \
 		"deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
   		$(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list >/dev/null
+	# sudo rm -rf /var/lib/apt/lists/*
 	sudo apt-get update && sudo apt-get -y install docker-ce docker-ce-cli containerd.io
 	#
 	sudo usermod -aG docker $USER
@@ -672,9 +698,11 @@ else
 fi
 
 figlet "🐳 cTop"
+# TODO: https://github.com/veggiemonk/awesome-docker/blob/master/README.md#terminal
 if ! command_exists ctop; then
 	echo "deb http://packages.azlux.fr/debian/ buster main" | sudo tee /etc/apt/sources.list.d/azlux.list
 	wget -qO - https://azlux.fr/repo.gpg.key | sudo apt-key add - >/dev/null
+	# sudo rm -rf /var/lib/apt/lists/*
 	sudo apt-get update >/dev/null
 	sudo apt-get -y install docker-ctop
 else
@@ -691,7 +719,24 @@ else
 fi
 
 figlet "VIRTUALBOX"
-if ! command_exists virtualbox; then
+# FIXME: problème d'installation, revoir la méthode peut être
+if fale and ! command_exists virtualbox; then
+	# default: There were problems setting up VirtualBox.  To re-start the set-up process, run
+    # default:   /sbin/vboxconfig
+    # default: as root.  If your system is using EFI Secure Boot you may need to sign the
+    # default: kernel modules (vboxdrv, vboxnetflt, vboxnetadp, vboxpci) before you can load
+    # default: them. Please see your Linux system's documentation for more information.
+    # default:
+    # default: VirtualBox has been installed successfully.
+    # default:
+    # default: You will find useful information about using VirtualBox in the user manual
+    # default:   /opt/VirtualBox/UserManual.pdf
+    # default: and in the user FAQ
+    # default:   http://www.virtualbox.org/wiki/User_FAQ
+    # default:
+    # default: We hope that you enjoy using VirtualBox.
+    # default: The installation log file is at /var/log/vbox-install.log.
+
 	sudo apt-get -y install build-essential linux-headers-amd64
 	cd /tmp
 	wget -q https://download.virtualbox.org/virtualbox/6.1.22/VirtualBox-6.1.22-144080-Linux_amd64.run
@@ -737,6 +782,7 @@ if ! command_exists code; then
 	sudo apt-get -y install software-properties-common apt-transport-https curl
 	curl -sSL https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
 	sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
+	# sudo rm -rf /var/lib/apt/lists/*
 	sudo apt-get update && sudo apt-get -y install code
 else
 	echo "vs code alread installed -> SKIP"
@@ -749,7 +795,8 @@ if [ ! "$(code --list-extensions | grep 'Shan.code-settings-sync')" ]; then
 fi
 
 figlet "PYCHARM"
-if [ ! -f /opt/pycharm/bin/pycharm.sh ]; then
+# Too long to install ...
+if false and [ ! -f /opt/pycharm/bin/pycharm.sh ]; then
 	curl -fsSL https://download.jetbrains.com/python/pycharm-professional-2021.1.1.tar.gz -o /tmp/pycharm-professional-2021.1.1.tar.gz
 	sudo mkdir -p /opt/pycharm
 	sudo tar --strip-components=1 -xzf /tmp/pycharm-professional-2021.1.1.tar.gz -C /opt/pycharm
@@ -780,7 +827,7 @@ fi
 # |  __|| |  | | . ` |  | |  \___ \
 # | |   | |__| | |\  |  | |  ____) |
 # |_|    \____/|_| \_|  |_| |_____/
-#
+#"PYC
 figlet "FONTS"
 if [ $(fc-list | grep "Source Code Pro for Powerline" | wc -l) -eq 0 ]; then
 	# Dependencies
@@ -827,16 +874,17 @@ figlet "NFS"
 sudo apt-get -y install nfs-common
 # sh for loop
 # https://www.shellscript.sh/loops.html
-NAS_VOLUME="volume1"
-NAS_IP="192.168.1.29"
-HOST_MOUNT_ROOTDIR="/media/nas"
-for nas_drive in downloads video tvshow 2018_HMX 2019_365TALENTS 2021_365Talents 2021_UNOWHY; do
-	HOST_MOUNT_DIR="${HOST_MOUNT_ROOTDIR}/${NAS_VOLUME}/${nas_drive}"
-	sudo mkdir -p "${HOST_MOUNT_DIR}"
-	! grep -q "/${NAS_VOLUME}/${nas_drive}" /etc/fstab && echo "${NAS_IP}:/${NAS_VOLUME}/${nas_drive} ${HOST_MOUNT_DIR} nfs    defaults,user,nofail,x-systemd.device-timeout=1,noatime,intr 0 0" | sudo tee -a /etc/fstab
-done
-sudo mount -a
-
+if false; then
+    NAS_VOLUME="volume1"
+    NAS_IP="192.168.1.29"
+    HOST_MOUNT_ROOTDIR="/media/nas"
+    for nas_drive in downloads video tvshow 2018_HMX 2019_365TALENTS 2021_365Talents 2021_UNOWHY; do
+	    HOST_MOUNT_DIR="${HOST_MOUNT_ROOTDIR}/${NAS_VOLUME}/${nas_drive}"
+	    sudo mkdir -p "${HOST_MOUNT_DIR}"
+	    ! grep -q "/${NAS_VOLUME}/${nas_drive}" /etc/fstab && echo "${NAS_IP}:/${NAS_VOLUME}/${nas_drive} ${HOST_MOUNT_DIR} nfs    defaults,user,nofail,x-systemd.device-timeout=1,noatime,intr 0 0" | sudo tee -a /etc/fstab
+    done
+    sudo mount -a
+fi
 # POST-INIT
 #  _____   ____   _____ _______   _____ _   _ _____ _______
 # |  __ \ / __ \ / ____|__   __| |_   _| \ | |_   _|__   __|

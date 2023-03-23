@@ -77,14 +77,14 @@ export FZF_DEFAULT_OPTS='--preview "bat --style=numbers --color=always --line-ra
 
 # GRC
 # https://github.com/garabik/grc#zsh
-[[ -s "/etc/grc.zsh" ]] && source /etc/grc.zsh
-for cmd in g++ gas head make ld ping6 tail traceroute6 $(ls /usr/share/grc/); do
-  cmd="${cmd##*conf.}"
-  #   type "${cmd}" >/dev/null 2>&1 && echo alias "${cmd}"="$( which grc ) --colour=auto ${cmd}"
-  type "${cmd}" >/dev/null 2>&1
-done
-# FIX: remove coloration on 'make' to keep autocompletion capatibility
-alias make='make'
+# [[ -s "/etc/grc.zsh" ]] && source /etc/grc.zsh
+# for cmd in g++ gas head make ld ping6 tail traceroute6 $(ls /usr/share/grc/); do
+#   cmd="${cmd##*conf.}"
+#   #   type "${cmd}" >/dev/null 2>&1 && echo alias "${cmd}"="$( which grc ) --colour=auto ${cmd}"
+#   type "${cmd}" >/dev/null 2>&1
+# done
+# # FIX: remove coloration on 'make' to keep autocompletion capatibility
+# alias make='make'
 
 # PyWal
 # https://github.com/dylanaraps/pywal/wiki/Getting-Started#applying-the-theme-to-new-terminals
@@ -93,8 +93,11 @@ alias make='make'
 wal -q -n -R >/dev/null
 
 # GITA
-source $HOME/.config/gita/.gita-completion.zsh
+# source $HOME/.config/gita/.gita-completion.zsh
 
 # hotkeys
 bindkey '\e[1~' beginning-of-line
 bindkey '\e[4~' end-of-line
+
+# https://askubuntu.com/questions/733434/one-single-command-to-update-everything-in-ubuntu
+alias fup='sudo apt-get -y update;sudo apt-get -y full-upgrade;sudo apt-get -y autoremove; sudo apt-get -y autoclean'

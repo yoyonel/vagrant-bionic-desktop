@@ -1,8 +1,15 @@
 Vagrant.configure("2") do |config|
-  # https://app.vagrantup.com/boxomatic/boxes/debian-11
-  config.vm.box = "boxomatic/debian-11"
-  config.vm.box_version = "20220301.0.1"
+  # https://app.vagrantup.com/debian/boxes/bullseye64/versions/11.20221219.1
+  config.vm.box = "debian/bullseye64"
+  # config.vm.box_version = "11.20221219.1"
+
+  # set auto_update to false, if you do NOT want to check the correct 
+  # additions version when booting this machine
+  config.vbguest.auto_update = false
   
+  # do NOT download the iso file from a webserver
+  config.vbguest.no_remote = true  
+
   # Optional - enlarge disk (will also convert the format from VMDK to VDI):l
   # config.disksize.size = "50GB"
 
@@ -12,7 +19,7 @@ Vagrant.configure("2") do |config|
   # end
   # set auto_update to false, if you do NOT want to check the correct 
   # additions version when booting this machine
-  config.vbguest.auto_update = true
+  # config.vbguest.auto_update = true
 
   # https://github.com/tmatilai/vagrant-timezone
   if Vagrant.has_plugin?("vagrant-timezone")
@@ -22,9 +29,12 @@ Vagrant.configure("2") do |config|
   config.vm.provider "virtualbox" do |vb|
     # Display the VirtualBox GUI when booting the machine
     vb.gui = true
-    vb.memory = 2048
+    vb.memory = 1024
     vb.cpus = 2
     vb.customize ['modifyvm', :id, '--clipboard', 'bidirectional', '--graphicscontroller', 'vmsvga']
+    # https://github.com/matthewjberger/eager/blob/master/Vagrantfile
+    # Set the video memory to 128Mb:
+    vb.customize ["modifyvm", :id, "--vram", "128"]
   end
 
   # UI Ressources: Themes, Wallpapers
@@ -44,4 +54,6 @@ Vagrant.configure("2") do |config|
   config.vm.provision "file", source: "dotfile/alacritty.yml", destination: "/home/vagrant/.config/alacritty/alacritty.yml"
   config.vm.provision "file", source: "dotfile/dconf.ini", destination: "/home/vagrant/.config/dconf/dconf.ini"
   config.vm.provision "file", source: "dotfile/rc.conf", destination: "/home/vagrant/.config/ranger/rc.conf"
+
+  config.vm.provision 'shell', inline: 'echo "vagrant:vagrant" | chpasswd'
 end
