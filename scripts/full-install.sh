@@ -885,6 +885,7 @@ if false; then
     done
     sudo mount -a
 fi
+
 # POST-INIT
 #  _____   ____   _____ _______   _____ _   _ _____ _______
 # |  __ \ / __ \ / ____|__   __| |_   _| \ | |_   _|__   __|
@@ -894,5 +895,6 @@ fi
 # |_|     \____/|_____/   |_|    |_____|_| \_|_____|  |_|
 #
 [ -f $HOME/.post-init.sh ] && chmod +x $HOME/.post-init.sh
+[ -f $HOME/.post-init.sh ] && chmod +x $HOME/.post-init-mate-theme.sh
 
 set +ex

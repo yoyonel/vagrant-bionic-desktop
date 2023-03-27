@@ -1,16 +1,7 @@
 #!/bin/sh
 set -ex
 
-# WM - MATE
-figlet "DCONF"
-dconf load / <$HOME/.config/dconf/dconf.ini
-
-figlet "WALLPAPERS"
-gsettings set org.mate.background picture-filename "$HOME/.local/share/wallpapers/default.png"
-gsettings set org.gnome.desktop.background picture-options "zoom"
-
-# PyWal - set theme color from background
-wal -n -q -e -i "$HOME/.local/share/wallpapers/default.png" >/dev/null
+. .post-init-mate-theme.sh
 
 # pyenv
 figlet "Python 3.9.4"
@@ -34,6 +25,7 @@ if ! command_exists auto-cpufreq; then
 	git clone https://github.com/AdnanHodzic/auto-cpufreq.git /tmp/auto-cpufreq
 	cd /tmp/auto-cpufreq
 	sudo ./auto-cpufreq-installer
+	# FIX: need to be portable/generic (CI, laptop, desktop, etc ...)
 	sudo auto-cpufreq --install
 	systemctl status auto-cpufreq
 	cd -

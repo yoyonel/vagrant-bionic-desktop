@@ -27,6 +27,8 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provider "virtualbox" do |vb|
+    # Virtual Machine Name
+    vb.name = "vagrant-bionic-desktop"
     # Display the VirtualBox GUI when booting the machine
     vb.gui = true
     vb.memory = 1024
@@ -43,6 +45,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision "file", source: "data/Zafiro-Icons.tar.xz", destination: "/tmp/Zafiro-Icons.tar.xz"
   #
   config.vm.provision "file", source: "scripts/.post-init.sh", destination: "/home/vagrant/.post-init.sh"
+  config.vm.provision "file", source: "scripts/.post-init-mate-theme.sh", destination: "/home/vagrant/.post-init-mate-theme.sh"
   #
   config.vm.provision "shell", privileged: false, path: "scripts/full-install.sh"  
   #

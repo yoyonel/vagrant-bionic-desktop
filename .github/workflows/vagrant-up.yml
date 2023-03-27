@@ -27,28 +27,12 @@ jobs:
       - name: Update Vagrant box
         run: ./build_or_update.sh
 
-      - name: Run Vagrant Up
-        run: vagrant up
-
-      - name: Get Virtualbox running VM id
-        run: id_vm=$(VBoxManage list runningvms | grep -Po "\{(?<id_vm>.*)\}" | tail -c +2 | head -c -2)
-
-      - name: Screenshot after loging
-        run: |          
-          # send the login
-          VBoxManage controlvm $id_vm keyboardputstring "vqgrqnt"
-          # send <tab>
-          VBoxManage controlvm $id_vm keyboardputscancode 0f 8f
-          # send the password
-          VBoxManage controlvm $id_vm keyboardputstring "vqgrqnt"
-          # send <tab> x 2 + <enter>
-          VBoxManage controlvm $id_vm keyboardputscancode 0f 8f 0f 8f 1c 9C
-          # capture a screenshot of the desktop
-          mkdir -p output/screenshots
-          VBoxManage controlvm $id_vm screenshotpng output/screenshots/after_login.png
-
-      - name: Archive screenshots
+      - name: Save box from VM
+        run: vagrant package --base 'vagrant-bionic-desktop' --output output/box/vagrant-bionic-desktop.box
+      
+      # https://docs.github.com/fr/actions/using-workflows/storing-workflow-data-as-artifacts
+      - name: Archive exported VMs box
         uses: actions/upload-artifact@v3
         with:
           name: code-coverage-report
-          path: output/screenshots/*.png
+          path: output/box/*.box
