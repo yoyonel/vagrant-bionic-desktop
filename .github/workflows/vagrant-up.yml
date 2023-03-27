@@ -4,7 +4,8 @@ on: [push]
 
 jobs:
   vagrant-up:
-    runs-on: macos-10.15
+    # runs-on: macos-10.15
+    runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -20,8 +21,14 @@ jobs:
     - name: Show Vagrant version
       run: vagrant --version
 
-    - name: Run rebuild
+    - name: Build Vagrant box
       run: ./rebuild.sh
 
-    # - name: ssh into box after boot
-    #   run: vagrant ssh -c "echo 'hello world!'"
+    - name: Update Vagrant box
+      run: ./build_or_update.sh
+
+    - name: Run Vagrant Up
+      run: vagrant up
+
+    - name: ssh into box after boot
+      run: vagrant ssh -c "echo 'hello world!'"
