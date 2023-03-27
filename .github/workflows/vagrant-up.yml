@@ -8,27 +8,47 @@ jobs:
     runs-on: macos-latest
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Cache Vagrant boxes
-      uses: actions/cache@v2
-      with:
-        path: ~/.vagrant.d/boxes
-        key: ${{ runner.os }}-vagrant-${{ hashFiles('Vagrantfile') }}
-        restore-keys: |
-          ${{ runner.os }}-vagrant-
+      - name: Cache Vagrant boxes
+        uses: actions/cache@v2
+        with:
+          path: ~/.vagrant.d/boxes
+          key: ${{ runner.os }}-vagrant-${{ hashFiles('Vagrantfile') }}
+          restore-keys: |
+            ${{ runner.os }}-vagrant-
 
-    - name: Show Vagrant version
-      run: vagrant --version
+      - name: Show Vagrant version
+        run: vagrant --version
 
-    - name: Build Vagrant box
-      run: ./rebuild.sh
+      - name: Build Vagrant box
+        run: ./rebuild.sh
 
-    - name: Update Vagrant box
-      run: ./build_or_update.sh
+      - name: Update Vagrant box
+        run: ./build_or_update.sh
 
-    - name: Run Vagrant Up
-      run: vagrant up
+      - name: Run Vagrant Up
+        run: vagrant up
 
-    - name: ssh into box after boot
-      run: vagrant ssh -c "echo 'hello world!'"
+      - name: Get Virtualbox running VM id
+        run: id_vm=$(VBoxManage list runningvms | grep -Po "\{(?<id_vm>.*)\}" | tail -c +2 | head -c -2)
+
+      - name: Screenshot after loging
+        run: |          
+          # send the login
+          VBoxManage controlvm $id_vm keyboardputstring "vqgrqnt"
+          # send <tab>
+          VBoxManage controlvm $id_vm keyboardputscancode 0f 8f
+          # send the password
+          VBoxManage controlvm $id_vm keyboardputstring "vqgrqnt"
+          # send <tab> x 2 + <enter>
+          VBoxManage controlvm $id_vm keyboardputscancode 0f 8f 0f 8f 1c 9C
+          # capture a screenshot of the desktop
+          mkdir -p output/screenshots
+          VBoxManage controlvm $id_vm screenshotpng output/screenshots/after_login.png
+
+      - name: Archive screenshots
+        uses: actions/upload-artifact@v3
+        with:
+          name: code-coverage-report
+          path: output/screenshots/*.png
