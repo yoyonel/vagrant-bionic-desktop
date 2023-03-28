@@ -1,15 +1,22 @@
-name: vagrant-up
+name: build-vagrant-box
 
-on: [push]
+on:
+  push:
+  # https://jasonet.co/posts/scheduled-actions/
+  schedule:
+    # https://crontab.guru/every-4-hours
+    # At minute 0 past every 4th hour.
+    - cron: "* */4 * * *"
 
 jobs:
-  vagrant-up:
+  build-vagrant-box:
     # runs-on: macos-10.15
     runs-on: macos-latest
-
+    # https://docs.github.com/fr/actions/using-workflows/workflow-syntax-for-github-actions#permissions
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v2
-
       - name: Cache Vagrant boxes
         uses: actions/cache@v2
         with:
@@ -17,22 +24,22 @@ jobs:
           key: ${{ runner.os }}-vagrant-${{ hashFiles('Vagrantfile') }}
           restore-keys: |
             ${{ runner.os }}-vagrant-
-
       - name: Show Vagrant version
         run: vagrant --version
-
       - name: Build Vagrant box
         run: ./rebuild.sh
-
       - name: Update Vagrant box
         run: ./build_or_update.sh
-
       - name: Save box from VM
         run: vagrant package --base 'vagrant-bionic-desktop' --output output/box/vagrant-bionic-desktop.box
-      
       # https://docs.github.com/fr/actions/using-workflows/storing-workflow-data-as-artifacts
       - name: Archive exported VMs box
         uses: actions/upload-artifact@v3
         with:
           name: code-coverage-report
           path: output/box/*.box
+      # https://github.com/marketplace/actions/create-release
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "output/box/*.box"
+          bodyFile: "README.md"
