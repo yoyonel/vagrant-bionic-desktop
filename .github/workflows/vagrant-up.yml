@@ -36,7 +36,7 @@ jobs:
       - name: Archive exported VMs box
         uses: actions/upload-artifact@v3
         with:
-          name: code-coverage-report
+          name: vagrant-box
           path: output/box/*.box
       # https://github.com/marketplace/actions/create-release
       - uses: ncipollo/release-action@v1

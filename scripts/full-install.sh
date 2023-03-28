@@ -1,5 +1,6 @@
 #!/bin/sh
-set -ex
+# set -ex
+set -x
 
 command_exists() {
 	command -v "$@" >/dev/null 2>&1
