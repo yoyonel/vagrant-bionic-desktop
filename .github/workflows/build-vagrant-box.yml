@@ -17,6 +17,7 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v2
+
       - name: Cache Vagrant boxes
         uses: actions/cache@v2
         with:
@@ -24,22 +25,41 @@ jobs:
           key: ${{ runner.os }}-vagrant-${{ hashFiles('Vagrantfile') }}
           restore-keys: |
             ${{ runner.os }}-vagrant-
+
       - name: Show Vagrant version
         run: vagrant --version
+
+      - name: Make log (errors) directory
+        run: mkdir -p log
+
       - name: Build Vagrant box
-        run: ./rebuild.sh
+        run: |
+          ./rebuild.sh 2>&1 >> log/rebuild_err.log
+
       - name: Update Vagrant box
-        run: ./build_or_update.sh
+        run: ./build_or_update.sh 2>&1 >> log/build-or-update_err.log
+
+      - name: Archive exported logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: logs
+          path: log/*.log
+
       - name: Save box from VM
-        run: vagrant package --base 'vagrant-bionic-desktop' --output output/box/vagrant-bionic-desktop.box
+        run: vagrant package --base 'vagrant-bionic-desktop' --output output/box/vagrant-${{ hashFiles('Vagrantfile') }}.box
+
+      # https://levelup.gitconnected.com/github-actions-how-to-share-data-between-jobs-fc1547defc3e
+      # https://stackoverflow.com/questions/57498605/github-actions-share-workspace-artifacts-between-jobs
       # https://docs.github.com/fr/actions/using-workflows/storing-workflow-data-as-artifacts
       - name: Archive exported VMs box
         uses: actions/upload-artifact@v3
         with:
           name: vagrant-box
           path: output/box/*.box
+
+      # FIX: s'utilise dans le cadre d'une release (justement) donc a besoin d'un tag (de release)
       # https://github.com/marketplace/actions/create-release
-      - uses: ncipollo/release-action@v1
-        with:
-          artifacts: "output/box/*.box"
-          bodyFile: "README.md"
+      # - uses: ncipollo/release-action@v1
+      #   with:
+      #     artifacts: "output/box/*.box"
+      #     bodyFile: "README.md"
