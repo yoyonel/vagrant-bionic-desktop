@@ -4,13 +4,11 @@ on:
   push:
   # https://jasonet.co/posts/scheduled-actions/
   schedule:
-    # https://crontab.guru/every-4-hours
-    # At minute 0 past every 4th hour.
-    - cron: "* */4 * * *"
+    # https://crontab.guru/once-a-day
+    - cron: '0 0 * * *'
 
 jobs:
   build-vagrant-box:
-    # runs-on: macos-10.15
     runs-on: macos-latest
     # https://docs.github.com/fr/actions/using-workflows/workflow-syntax-for-github-actions#permissions
     permissions:
