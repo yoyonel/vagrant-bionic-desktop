@@ -44,19 +44,20 @@ Vagrant.configure("2") do |config|
   config.vm.provision "file", source: "data/Nordic-darker.tar.xz", destination: "/tmp/Nordic-darker.tar.xz"
   config.vm.provision "file", source: "data/Zafiro-Icons.tar.xz", destination: "/tmp/Zafiro-Icons.tar.xz"
   #
+  config.vm.provision "file", source: "scripts/", destination: "/home/vagrant/scripts"
   config.vm.provision "file", source: "scripts/.post-init.sh", destination: "/home/vagrant/.post-init.sh"
   config.vm.provision "file", source: "scripts/.post-init-mate-theme.sh", destination: "/home/vagrant/.post-init-mate-theme.sh"
   #
-  config.vm.provision "shell", privileged: false, path: "scripts/full-install.sh"  
+  config.vm.provision "shell", privileged: false, path: "full-install.sh"
   #
   config.vm.provision "file", source: "dotfile/.profile", destination: "/home/vagrant/.profile"
   config.vm.provision "file", source: "dotfile/.gitconfig", destination: "/home/vagrant/.gitconfig"
   config.vm.provision "file", source: "dotfile/.zshrc", destination: "/home/vagrant/.zshrc"
-  config.vm.provision "file", source: "dotfile/.tmux.conf.local", destination: "/home/vagrant/.tmux.conf.local"  
+  config.vm.provision "file", source: "dotfile/.tmux.conf.local", destination: "/home/vagrant/.tmux.conf.local"
   config.vm.provision "file", source: "dotfile/.powerlevel9k", destination: "/home/vagrant/.powerlevel9k"
   config.vm.provision "file", source: "dotfile/alacritty.yml", destination: "/home/vagrant/.config/alacritty/alacritty.yml"
   config.vm.provision "file", source: "dotfile/dconf.ini", destination: "/home/vagrant/.config/dconf/dconf.ini"
   config.vm.provision "file", source: "dotfile/rc.conf", destination: "/home/vagrant/.config/ranger/rc.conf"
-
+  #
   config.vm.provision 'shell', inline: 'echo "vagrant:vagrant" | chpasswd'
 end

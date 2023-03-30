@@ -23,12 +23,10 @@ curl -s https://raw.githubusercontent.com/NicolasGuilloux/blade-shadow-beta/mast
 figlet "AUTO-CPUFREQ"
 if ! command_exists auto-cpufreq; then
 	git clone https://github.com/AdnanHodzic/auto-cpufreq.git /tmp/auto-cpufreq
-	cd /tmp/auto-cpufreq
-	sudo ./auto-cpufreq-installer
+	sudo /tmp/auto-cpufreq/auto-cpufreq-installer
 	# FIX: need to be portable/generic (CI, laptop, desktop, etc ...)
 	sudo auto-cpufreq --install
 	systemctl status auto-cpufreq
-	cd -
 else
 	echo "auto-cpufreq already installed -> SKIP"
 fi

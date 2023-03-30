@@ -5,7 +5,7 @@ on:
   # https://jasonet.co/posts/scheduled-actions/
   schedule:
     # https://crontab.guru/once-a-day
-    - cron: '0 0 * * *'
+    - cron: "0 0 * * *"
 
 jobs:
   build-vagrant-box:
@@ -36,6 +36,9 @@ jobs:
 
       - name: Update Vagrant box
         run: ./build_or_update.sh 2>&1 >> log/build-or-update_err.log
+
+      - name: Test Vagrant box with SSH commands
+        run: ./vagrant_tests.sh
 
       - name: Archive exported logs
         uses: actions/upload-artifact@v3
