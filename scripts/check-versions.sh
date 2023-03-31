@@ -1,17 +1,21 @@
 #!/bin/zsh
 # set -e
 
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+
 test_command_silent() {
 	eval "$@" >/dev/null && echo "✅ $@" || echo "❌ $@"
 }
 
 test_command() {
-	result_cmd=$(eval "$@")
+	OUTPUT="$(eval $@ 2>&1)"
 	retVal=$?
 	if [ $retVal -eq 0 ]; then
-		echo -e "✅ $@: $result_cmd"
+		echo -e "✅ $@: ${GREEN}$OUTPUT${NC}"
 	else
-		echo -e "❌ $@"
+		printf "❌ $@\n${RED}$OUTPUT${NC}\n"
 	fi
 }
 
