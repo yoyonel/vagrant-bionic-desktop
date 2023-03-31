@@ -33,7 +33,13 @@ fi
 
 # DirEnv
 figlet "DIRENV"
-! command_exists direnv && curl -sfL https://direnv.net/install.sh | bash
+# ! command_exists direnv && curl -sfL https://direnv.net/install.sh | bash
+# default: curl: (22) The requested URL returned error: 403
+# default: [installer] the script failed with error 1.\n \n To report installation errors, submit an issue to\n     https://github.com/direnv/direnv/issues/new/choose
+#
+if ! command_exists direnv; then
+	sudo apt-get install -y direnv
+fi
 
 figlet "TMUX"
 sudo apt install -y tmux
@@ -156,12 +162,20 @@ sudo apt-get -y install \
 	net-tools \
 	dnsutils \
 	atop
+
+figlet "GOTOP"
 if ! command_exists gotop; then
-	if [ ! -d "/tmp/gotop" ]; then
-		git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop
-	fi
-	bash /tmp/gotop/scripts/download.sh
-	sudo mv gotop /usr/local/bin
+	# if [ ! -d "/tmp/gotop" ]; then
+	# 	git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop
+	# fi
+	# bash /tmp/gotop/scripts/download.sh
+	# sudo mv gotop /usr/local/bin
+
+	# TODO: find a way to get the last release
+	# https://github.com/xxxserxxx/gotop/releases
+	wget -q "https://github.com/xxxserxxx/gotop/releases/download/v4.2.0/gotop_v4.2.0_linux_amd64.deb" \
+		-O "/tmp/gotop_v4.2.0_linux_amd64.deb"
+	sudo dpkg -i "/tmp/gotop_v4.2.0_linux_amd64.deb"
 fi
 
 figlet "SPEEDTEST"
