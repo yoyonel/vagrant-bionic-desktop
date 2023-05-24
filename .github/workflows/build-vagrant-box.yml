@@ -41,14 +41,15 @@ jobs:
       - name: Update Vagrant box
         run: ./build_or_update.sh 2>&1 >> log/build-or-update_err.log
 
-      - name: Test Vagrant box with SSH commands
-        run: ./vagrant_tests.sh
-
       - name: Archive exported logs
+        if: always()
         uses: actions/upload-artifact@v3
         with:
           name: logs
           path: log/*.log
+
+      - name: Test Vagrant box with SSH commands
+        run: ./vagrant_tests.sh
 
       - name: Save box from VM
         run: vagrant package --base 'vagrant-bionic-desktop' --output output/box/vagrant-${{ hashFiles('Vagrantfile') }}.box
