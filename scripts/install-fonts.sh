@@ -13,8 +13,8 @@ if [ $(fc-list | grep "Source Code Pro for Powerline" | wc -l) -eq 0 ]; then
 	# Install
 	mkdir -p $HOME/.local/share/fonts
 
-	wget -q \
-		https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/SourceCodePro/Regular/complete/Sauce%20Code%20Pro%20Nerd%20Font%20Complete.ttf \
+	wget \
+		https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/SourceCodePro/Regular/SauceCodeProNerdFont-Regular.ttf \
 		-O "$HOME/.local/share/fonts/Source Code Pro for Powerline.otf"
 
 	fc-cache -fv

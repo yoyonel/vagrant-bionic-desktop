@@ -33,7 +33,9 @@ jobs:
       - name: Make log (errors) directory
         run: mkdir -p log
 
-      - name: Delete all plugins and reinstall
+      # https://developer.hashicorp.com/vagrant/docs/cli/plugin
+      - name: Delete all Vagrant plugins and reinstall
+        # [https://github.com/hashicorp/vagrant/issues/6026](Vagrant requires TTY #6026)
         run: vagrant plugin expunge --reinstall --force
 
       - name: Build Vagrant box
