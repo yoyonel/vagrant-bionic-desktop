@@ -34,7 +34,7 @@ jobs:
         run: mkdir -p log
 
       - name: Delete all plugins and reinstall
-        run: vagrant plugin expunge --reinstall
+        run: vagrant plugin expunge --reinstall --force
 
       - name: Build Vagrant box
         run: ./rebuild.sh 2>&1 >> log/rebuild_err.log
