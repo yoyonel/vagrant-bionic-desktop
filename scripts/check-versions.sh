@@ -44,4 +44,9 @@ test_command "poetry --version"
 test_command "nvim --version | head -n 1"
 test_command "code --version | head -n 1"
 
+test_command "ffmpeg -version | head -n 1"
+test_command "youtube-dl --version"
+test_command "vlc --version | head -n 1"
+test_command "mpv --version | head -n 1"
+
 # set +e

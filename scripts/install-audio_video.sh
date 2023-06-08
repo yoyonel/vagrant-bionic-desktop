@@ -45,29 +45,29 @@ figlet "AVIDEMUX"
 # 	echo "avidemux already installed -> SKIP"
 # fi
 
-# figlet "FFMPEG"
-# if ! command_exists ffmpeg; then
-# 	sudo apt-get -y install ffmpeg
-# else
-# 	echo "ffmpeg already installed -> SKIP"
-# fi
+figlet "FFMPEG"
+if ! command_exists ffmpeg; then
+	sudo apt-get -y install ffmpeg
+else
+	echo "ffmpeg already installed -> SKIP"
+fi
 
-# figlet "YOUTUBE-DL"
-# if ! command_exists youtube-dl; then
-# 	if command_exists pipx; then
-# 		pipx install youtube-dl
-# 	else
-# 		echo "YOUTUBE-DL - missing dependency: pipx - FAIL"
-# 	fi
-# else
-# 	echo "youtube-dl already installed -> SKIP"
-# fi
+figlet "YOUTUBE-DL"
+if ! command_exists youtube-dl; then
+	if command_exists pipx; then
+		pipx install youtube-dl
+	else
+		echo "YOUTUBE-DL - missing dependency: pipx - FAIL"
+	fi
+else
+	echo "youtube-dl already installed -> SKIP"
+fi
 
-# figlet "VLC"
-# ! command_exists vlc && sudo apt-get -y install vlc
+figlet "VLC"
+! command_exists vlc && sudo apt-get -y install vlc
 
-# figlet "MPV"
-# ! command_exists mpv && sudo apt-get -y install mpv
+figlet "MPV"
+! command_exists mpv && sudo apt-get -y install mpv
 
 # figlet "SPOTIFY"
 # # FIX: problem avec l'idempotence de l'installation
@@ -83,9 +83,9 @@ figlet "AVIDEMUX"
 # 	echo "spotify already installed -> SKIP"
 # fi
 
-# figlet "AUDACITY"
-# if ! command_exists audacity; then
-# 	sudo apt-get -y install audacity audacity-data
-# else
-# 	echo "audacity already installed -> SKIP"
-# fi
+figlet "AUDACITY"
+if ! command_exists audacity; then
+	sudo apt-get -y install audacity audacity-data
+else
+	echo "audacity already installed -> SKIP"
+fi

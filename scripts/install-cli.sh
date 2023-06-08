@@ -172,6 +172,7 @@ if ! command_exists gotop; then
 	# sudo mv gotop /usr/local/bin
 
 	# TODO: find a way to get the last release
+	# [https://gist.github.com/steinwaywhw/a4cd19cda655b8249d908261a62687f8](One Liner to Download the Latest Release from Github Repo)
 	# https://github.com/xxxserxxx/gotop/releases
 	wget -q "https://github.com/xxxserxxx/gotop/releases/download/v4.2.0/gotop_v4.2.0_linux_amd64.deb" \
 		-O "/tmp/gotop_v4.2.0_linux_amd64.deb"
