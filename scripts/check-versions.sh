@@ -49,4 +49,7 @@ test_command "youtube-dl --version"
 test_command "vlc --version | head -n 1"
 test_command "mpv --version | head -n 1"
 
+test_command "cpu-x --version | head -n 1"
+test_command "hardinfo --version | head -n 1"
+
 # set +e

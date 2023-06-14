@@ -20,6 +20,7 @@ source scripts/.tools.sh
 . scripts/install-windows_manager.sh
 . scripts/install-dconf.sh
 . scripts/install-system.sh
+. scripts/install-system-and-tools.sh
 . scripts/install-virtualbox.sh
 . scripts/install-ide.sh
 . scripts/install-fonts.sh
