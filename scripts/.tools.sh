@@ -20,4 +20,8 @@ export DEBIAN_FRONTEND=noninteractive
 sudo apt-get clean && sudo apt-get update
 
 # Figlet
-! command_exists figlet && sudo apt-get -y install figlet
+if ! command_exists figlet; then
+	sudo apt-get -y install figlet
+else
+	echo "figlet already installed -> SKIP"
+fi

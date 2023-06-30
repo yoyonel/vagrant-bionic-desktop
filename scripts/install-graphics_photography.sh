@@ -8,4 +8,6 @@
 #                  |_|                                                            |___/          |_|          |___/
 #
 figlet "FLAMESHOT"
-! command_exists flameshot && sudo apt-get -y install flameshot
+if ! command_exists flameshot; then
+	sudo apt-get -y install flameshot
+fi

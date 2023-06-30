@@ -27,6 +27,16 @@ curl -fsSL https://go.microsoft.com/fwlink/p/?LinkID=2112886&clcid=0x40c&culture
 sudo dpkg -i /tmp/teams_amd64.deb
 ```
 
+- [Flathub.org - teams-for-linux](https://flathub.org/fr/apps/com.github.IsmaelMartinez.teams_for_linux)
+
+```sh
+# Installation manuelle
+flatpak install flathub com.github.IsmaelMartinez.teams_for_linux
+
+# Exécuter
+flatpak run com.github.IsmaelMartinez.teams_for_linux
+```
+
 ## [APP] Shadow (Béta)
 
 `OS: Ubuntu 20.04.1 LTS (fossa-charmander-14 X53) x86_64`

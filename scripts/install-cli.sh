@@ -33,18 +33,23 @@ fi
 
 # DirEnv
 figlet "DIRENV"
-# ! command_exists direnv && curl -sfL https://direnv.net/install.sh | bash
-# default: curl: (22) The requested URL returned error: 403
-# default: [installer] the script failed with error 1.\n \n To report installation errors, submit an issue to\n     https://github.com/direnv/direnv/issues/new/choose
-#
 if ! command_exists direnv; then
 	sudo apt-get install -y direnv
 fi
 
 figlet "TMUX"
-sudo apt install -y tmux
+if ! command_exists tmux; then
+	sudo apt install -y tmux
+else
+	echo "TMUX already installed -> SKIP"
+fi
 # bc: use by tmux-plugins/tmux-docker
-! command_exists bc && sudo apt-get -y install tmux bc
+if ! command_exists bc; then 
+	sudo apt-get -y install bc
+else
+	echo "BC already installed -> SKIP"
+fi
+
 if [ ! -f "$HOME/.tmux/.tmux.conf" ]; then
 	git clone https://github.com/gpakosz/.tmux.git $HOME/.tmux
 fi
@@ -70,22 +75,29 @@ figlet "FZF"
 # TODO: ne plus passer par apt pour l'install ça semble bugger pour l'historique
 # préférer un clone du répo et installation des binaires
 # ou un download/install d'une release binaire
-! command_exists fzf && sudo apt-get -y install fzf
+if ! command_exists fzf; then
+	sudo apt-get -y install fzf
+fi
 
 figlet "LSD"
 if ! command_exists lsd; then
 	# https://github.com/Peltoche/lsd
-	wget -q https://github.com/Peltoche/lsd/releases/download/0.20.1/lsd_0.20.1_amd64.deb -O /tmp/lsd_0.20.1_amd64.deb
-	sudo dpkg -i /tmp/lsd_0.20.1_amd64.deb
+	# wget -q https://github.com/Peltoche/lsd/releases/download/0.20.1/lsd_0.20.1_amd64.deb -O /tmp/lsd_0.20.1_amd64.deb
+	# sudo dpkg -i /tmp/lsd_0.20.1_amd64.deb
+	sudo apt-get install -y lsd
 else
 	echo "lsd already installed => SKIP"
 fi
 
 figlet "AUTOJUMP"
-! command_exists autojump && sudo apt-get -y install autojump
+if ! command_exists autojump; then
+	sudo apt-get -y install autojump
+fi
 
 figlet "GRC"
-! command_exists grc && sudo apt-get -y install grc
+if ! command_exists grc; then
+	sudo apt-get -y install grc
+fi
 
 figlet "PYWAL"
 if ! command_exists wal; then
@@ -96,47 +108,68 @@ else
 fi
 
 figlet "NEOFETCH"
-! command_exists neofetch && sudo apt-get -y install neofetch
+if ! command_exists neofetch; then
+	sudo apt-get -y install neofetch
+fi
 
 figlet "MOST"
-! command_exists most && sudo apt-get -y install most
+if ! command_exists most; then
+	sudo apt-get -y install most
+fi
 
 figlet "TREE"
-! command_exists tree && sudo apt-get -y install tree
+if ! command_exists tree; then
+	sudo apt-get -y install tree
+fi
 
 figlet "X[CLIP&SEL]"
-! command_exists xclip && sudo apt-get -y install xclip xsel
+if ! command_exists xclip; then 
+	sudo apt-get -y install xclip xsel
+fi
 
 figlet "BAT"
 if ! command_exists bat; then
 	wget -q https://github.com/sharkdp/bat/releases/download/v0.18.0/bat_0.18.0_amd64.deb -O /tmp/bat_0.18.0_amd64.deb
-	sudo dpkg -i /tmp/bat_0.18.0_amd64.deb
+	sudo dpkg -i /tmp/bat_0.18.0_amd64.deb	
 else
 	echo "bat already installed -> SKIP"
 fi
 
 figlet "JQ"
-! command_exists jq && sudo apt-get -y install jq
+if ! command_exists jq; then
+	sudo apt-get -y install jq
+fi
 
 figlet "RIPGREP"
 # ripgrep recursively searches directories for a regex pattern
-! command_exists rg && sudo apt-get -y install ripgrep
+if ! command_exists rg; then
+	sudo apt-get -y install ripgrep
+fi
 
 figlet "SILVERSEARCHER-AG"
 # A code searching tool similar to ack, with a focus on speed.
 # (ack is a code-searching tool, similar to grep but optimized for programmers searching large trees of source code.)
-! command_exists ag && sudo apt-get -y install silversearcher-ag
+if ! command_exists ag; then
+	sudo apt-get -y install silversearcher-ag
+fi
 
 figlet "RSYNC"
-! command_exists rsync && sudo apt-get -y install rsync
+if ! command_exists rsync; then
+	sudo apt-get -y install rsync
+fi
 
 figlet "TLDR"
-! command_exists tldr && sudo apt-get -y install tldr
+if ! command_exists tldr; then
+	sudo apt-get -y install tldr
+fi
+
 tldr tldr >/dev/null
 
 figlet "NCDU"
 # https://dev.yorhel.nl/ncdu
-! command_exists ncdu && sudo apt-get -y install ncdu
+if ! command_exists ncdu; then
+	sudo apt-get -y install ncdu
+fi
 
 figlet "DUF"
 # https://github.com/muesli/duf
@@ -144,11 +177,15 @@ if ! command_exists duf; then
 	# snap installation
 	if command_exists snap; then
 		sudo snap install duf-utility
+	else
+		sudo apt-get install -y duf
 	fi
 fi
 
 figlet "NMAP"
-! command_exists nmap && sudo apt-get -y install nmap
+if ! command_exists nmap; then
+	sudo apt-get -y install nmap
+fi
 
 figlet "MONITORING"
 # dnsutils -> dig: DNS Lookup utility

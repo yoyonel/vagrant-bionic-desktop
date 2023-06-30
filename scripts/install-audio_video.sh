@@ -64,10 +64,14 @@ else
 fi
 
 figlet "VLC"
-! command_exists vlc && sudo apt-get -y install vlc
+if ! command_exists vlc; then
+	sudo apt-get -y install vlc
+fi
 
 figlet "MPV"
-! command_exists mpv && sudo apt-get -y install mpv
+if ! command_exists mpv; then 
+	sudo apt-get -y install mpv
+fi
 
 # figlet "SPOTIFY"
 # # FIX: problem avec l'idempotence de l'installation

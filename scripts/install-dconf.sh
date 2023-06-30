@@ -6,4 +6,8 @@
 # |_____/ \_____\____/|_| \_|_|
 #
 figlet "DCONF"
-! command_exists dconf && sudo apt-get -y install dconf-cli
+if ! command_exists dconf; then
+	sudo apt-get -y install dconf-cli
+else
+	echo "dconf already installed -> SKIP"
+fi

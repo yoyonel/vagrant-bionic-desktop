@@ -15,4 +15,6 @@
 
 #  - Show available FIGlet fonts:
 #    showfigfonts {{optional_string_to_display}}
-! command_exists figlet && sudo apt-get -y install figlet
+if ! command_exists figlet; then
+	sudo apt-get -y install figlet
+fi

@@ -39,13 +39,17 @@ jobs:
         run: vagrant plugin expunge --reinstall --force
 
       - name: Build Vagrant box
-        run: ./rebuild.sh 2>&1 >> log/rebuild_err.log | tee log/rebuild_err.log
+        run: ./rebuild.sh
+        # run: ./rebuild.sh 2>&1 >> log/rebuild_err.log | tee log/rebuild_err.log
 
       - name: Update Vagrant box
-        run: ./build_or_update.sh 2>&1 >> log/build-or-update_err.log | tee log/build-or-update_err.log
+        run: ./build_or_update.sh
+        # run: ./build_or_update.sh 2>&1 >> log/build-or-update_err.log | tee log/build-or-update_err.log
+
 
       - name: Test Vagrant box with SSH commands
-        run: ./vagrant_tests.sh 2>&1 >> log/vagrant-tests_err.log | tee log/vagrant-tests_err.log
+        run: ./vagrant_tests.sh
+        # run: ./vagrant_tests.sh 2>&1 >> log/vagrant-tests_err.log | tee log/vagrant-tests_err.log
 
       - name: Archive exported logs
         if: always()

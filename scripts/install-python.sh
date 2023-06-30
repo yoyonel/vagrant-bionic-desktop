@@ -9,20 +9,22 @@ figlet "PYTHON"
 sudo apt-get -y install \
 	python3-pip \
 	python3-venv \
-	python3-pip \
 	python3-argcomplete \
 	python-is-python3
 
 figlet "PIPX"
-! command_exists pipx && python3 -m pip install --user pipx
-python3 -m pipx ensurepath
-export PATH=$PATH:"$HOME/.local/bin"
+if ! command_exists pipx; then
+	sudo apt-get -y install pipx
+	pipx ensurepath
+else
+	echo "pipx already installed -> SKIP"
+fi
 
 figlet "PYENV"
 # if ! command_exists pyenv; then
 if [ ! -d $HOME/.pyenv ]; then
 	# https://github.com/pyenv/pyenv/wiki#suggested-build-environment
-	# Python (dev) dependencies for installing python interpreters from sources	
+	# Python (dev) dependencies for installing python interpreters from sources
 	sudo apt-get install -y \
 		make \
 		build-essential \

@@ -19,7 +19,9 @@ else
 fi
 
 figlet "TIG"
-! command_exists tig && sudo apt-get -y install tig
+if ! command_exists tig; then
+	sudo apt-get -y install tig
+fi
 
 figlet "GitHub cli"
 if ! command_exists gh; then
@@ -42,7 +44,7 @@ fi
 figlet "GITA"
 if ! command_exists gita; then
 	# https://github.com/nosarthur/gita
-	pip3 install -U gita
+	pipx install gita
 	mkdir -p $HOME/.config/gita
 	curl -fsSL https://raw.githubusercontent.com/nosarthur/gita/master/.gita-completion.zsh -o $HOME/.config/gita/.gita-completion.zsh
 else

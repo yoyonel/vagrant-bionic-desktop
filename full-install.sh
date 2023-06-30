@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# set -ex
-set -x
+set -ex
+# set -x
 
 ls scripts/
 
@@ -21,7 +21,8 @@ source scripts/.tools.sh
 . scripts/install-dconf.sh
 . scripts/install-system.sh
 . scripts/install-system-and-tools.sh
-. scripts/install-virtualbox.sh
+# installation doesn't work with debian 12 (on virtual machine) 
+# . scripts/install-virtualbox.sh
 . scripts/install-ide.sh
 . scripts/install-fonts.sh
 . scripts/install-keyboard.sh

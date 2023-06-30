@@ -15,8 +15,17 @@ fi
 figlet "FISADEV"
 if [ ! -f $HOME/.config/nvim/init.vim ]; then
 	# Enabling the Python 3 Provider
-	sudo pip3 install \
-		pynvim flake8 pylint isort
+	# pipx install pynvim flake8 pylint isort
+	#
+	# [Allow to install multiple packages #88](https://github.com/pypa/pipx/issues/88#issuecomment-1482693600)
+	# https://www.cyberciti.biz/faq/linux-unix-bash-for-loop-one-line-command/
+	# for p in pynvim flake8 pylint isort; do pipx install $p; done
+
+	sudo apt-get install -y \
+		python3-pynvim \
+		python3-flake8 \
+		pylint \
+		python3-isort
 
 	mkdir -p $HOME/.config/nvim/
 	echo "download config.vim from fisadev ..."

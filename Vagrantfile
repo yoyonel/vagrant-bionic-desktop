@@ -1,6 +1,6 @@
 Vagrant.configure("2") do |config|
   # https://app.vagrantup.com/debian/boxes/bullseye64/versions/11.20221219.1
-  config.vm.box = "debian/bullseye64"
+  config.vm.box = "debian/bookworm64"
   # config.vm.box_version = "11.20221219.1"
 
   # set auto_update to false, if you do NOT want to check the correct 

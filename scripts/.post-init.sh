@@ -1,7 +1,7 @@
 #!/bin/sh
 set -ex
 
-. .post-init-mate-theme.sh
+sh .post-init-mate-theme.sh
 
 # pyenv
 figlet "Python 3.9.4"

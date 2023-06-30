@@ -30,4 +30,7 @@ else
 fi
 
 figlet "REDSHIT"
-! command_exists redshift && sudo apt-get update && sudo apt-get -y install redshift redshift-gtk
+if ! command_exists redshift; then
+	sudo apt-get update
+	sudo apt-get -y install redshift redshift-gtk
+fi

@@ -84,7 +84,11 @@ else
 fi
 
 figlet "LYNX"
-! command_exists lynx && sudo apt-get -y install lynx
+if ! command_exists lynx; then
+	sudo apt-get -y install lynx
+else
+	echo "LYNX already installed -> SKIP"
+fi
 
 # figlet "SHADOW"
 # if ! command_exists ShadowBeta.AppImage; then
