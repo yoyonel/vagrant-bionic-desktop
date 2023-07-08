@@ -8,8 +8,10 @@
 figlet "NEOVIM"
 if ! command_exists nvim; then
 	# https://vim.fisadev.com/
+	# https://github.com/neovim/neovim/wiki/Installing-Neovim#debian
 	sudo apt-get -y install \
-		git curl python3-pip exuberant-ctags ack-grep neovim
+		git curl python3-pip exuberant-ctags ack-grep \
+		neovim python3-neovim
 fi
 
 figlet "FISADEV"
@@ -25,7 +27,8 @@ if [ ! -f $HOME/.config/nvim/init.vim ]; then
 		python3-pynvim \
 		python3-flake8 \
 		pylint \
-		python3-isort
+		python3-isort \
+		python3-jedi
 
 	mkdir -p $HOME/.config/nvim/
 	echo "download config.vim from fisadev ..."
