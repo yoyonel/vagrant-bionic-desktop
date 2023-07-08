@@ -12,7 +12,9 @@ if ! command_exists brave-browser; then
 	echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main" | sudo tee /etc/apt/sources.list.d/brave-browser-release.list	
 	# sudo rm -rf /var/lib/apt/lists/*
 	# # https://linux.how2shout.com/how-to-install-brave-browser-on-debian-12-11-linux/
-	sudo apt-get clean && apt-get update && sudo apt-get -y install brave-browser
+	sudo apt-get clean && \
+	sudo apt-get update && \
+	sudo apt-get -y install brave-browser
 else
 	echo "brave-broswer: skip"
 fi
