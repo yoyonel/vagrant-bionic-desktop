@@ -7,12 +7,9 @@
 #
 figlet "Brave"
 if ! command_exists brave-browser; then
-	sudo apt-get -y install apt-transport-https curl	
+	# https://brave.com/linux/#debian-ubuntu-mint
 	sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg	
-	echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg arch=amd64] https://brave-browser-apt-release.s3.brave.com/ stable main" | sudo tee /etc/apt/sources.list.d/brave-browser-release.list	
-	# sudo rm -rf /var/lib/apt/lists/*
-	# # https://linux.how2shout.com/how-to-install-brave-browser-on-debian-12-11-linux/
-	sudo apt-get clean && \
+	echo "deb [signed-by=/usr/share/keyrings/brave-browser-archive-keyring.gpg] https://brave-browser-apt-release.s3.brave.com/ stable main"|sudo tee /etc/apt/sources.list.d/brave-browser-release.list
 	sudo apt-get update && \
 	sudo apt-get -y install brave-browser
 else
