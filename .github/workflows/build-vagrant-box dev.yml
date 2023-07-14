@@ -1,0 +1,69 @@
+name: build-vagrant-box [dev]
+
+on:
+  push:
+  # https://jasonet.co/posts/scheduled-actions/
+  schedule:
+    # https://crontab.guru/once-a-day
+    - cron: "0 0 * * *"
+
+jobs:
+  build-vagrant-box:
+    runs-on: macos-latest
+    # https://docs.github.com/fr/actions/using-workflows/workflow-syntax-for-github-actions#permissions
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: develop 
+      - name: Cache Vagrant boxes
+        uses: actions/cache@v2
+        with:
+          path: ~/.vagrant.d/boxes
+          key: ${{ runner.os }}-vagrant-${{ hashFiles('Vagrantfile') }}
+          restore-keys: |
+            ${{ runner.os }}-vagrant-
+
+      - name: Install latest Vagrant version
+        run: brew install hashicorp/tap/hashicorp-vagrant
+
+      - name: Show Vagrant version
+        run: vagrant --version
+
+      - name: Make log (errors) directory
+        run: mkdir -p log
+
+      # https://developer.hashicorp.com/vagrant/docs/cli/plugin
+      - name: Delete all Vagrant plugins and reinstall
+        # [https://github.com/hashicorp/vagrant/issues/6026](Vagrant requires TTY #6026)
+        run: vagrant plugin expunge --reinstall --force
+
+      - name: Build Vagrant box
+        run: ./rebuild.sh
+        
+      - name: Update Vagrant box
+        run: ./build_or_update.sh
+
+      - name: Test Vagrant box with SSH commands
+        run: ./vagrant_tests.sh
+        # run: ./vagrant_tests.sh 2>&1 >> log/vagrant-tests_err.log | tee log/vagrant-tests_err.log
+
+      - name: Archive exported logs
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: logs
+          path: log/*.log
+
+      - name: Save box from VM
+        run: vagrant package --base 'vagrant-bionic-desktop' --output output/box/vagrant-${{ hashFiles('Vagrantfile') }}.box
+
+      # https://levelup.gitconnected.com/github-actions-how-to-share-data-between-jobs-fc1547defc3e
+      # https://stackoverflow.com/questions/57498605/github-actions-share-workspace-artifacts-between-jobs
+      # https://docs.github.com/fr/actions/using-workflows/storing-workflow-data-as-artifacts
+      - name: Archive exported VMs box
+        uses: actions/upload-artifact@v3
+        with:
+          name: vagrant-box
+          path: output/box/*.box
