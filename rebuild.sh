@@ -9,7 +9,5 @@ vagrant destroy --force && vagrant up
 vagrant vbguest --do install
 vagrant reload
 
-set +ex
-vagrant ssh --color --timestamp --no-tty --command "/home/vagrant/.post-init-mate-theme.sh"
-
 # set +ex
+vagrant ssh --color --timestamp --no-tty --command "/home/vagrant/.post-init-mate-theme.sh"
