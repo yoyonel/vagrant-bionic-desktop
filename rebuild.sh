@@ -11,3 +11,4 @@ vagrant reload
 
 # set +ex
 vagrant ssh --color --timestamp --no-tty --command "/home/vagrant/.post-init-mate-theme.sh"
+vagrant ssh --color --timestamp --no-tty --command "/home/vagrant/.post-init-flatpak.sh"

@@ -8,6 +8,7 @@ ls scripts/
 source scripts/.tools.sh
 
 . scripts/install-apt-full.sh
+. scripts/install-flatpak.sh
 . scripts/install-common.sh
 . scripts/install-desktop.sh
 . scripts/install-python.sh

@@ -47,6 +47,7 @@ Vagrant.configure("2") do |config|
   config.vm.provision "file", source: "scripts/", destination: "/home/vagrant/scripts"
   config.vm.provision "file", source: "scripts/.post-init.sh", destination: "/home/vagrant/.post-init.sh"
   config.vm.provision "file", source: "scripts/.post-init-mate-theme.sh", destination: "/home/vagrant/.post-init-mate-theme.sh"
+  config.vm.provision "file", source: "scripts/.post-init-flatpak.sh", destination: "/home/vagrant/.post-init-flatpak.sh"
   #
   config.vm.provision "shell", privileged: false, path: "full-install.sh"
   #

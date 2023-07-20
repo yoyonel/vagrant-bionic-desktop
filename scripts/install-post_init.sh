@@ -7,4 +7,5 @@
 #
 figlet "post-init"
 [ -f $HOME/.post-init.sh ] && chmod +x $HOME/.post-init.sh
-[ -f $HOME/.post-init.sh ] && chmod +x $HOME/.post-init-mate-theme.sh
+[ -f $HOME/.post-init-mate-theme.sh ] && chmod +x $HOME/.post-init-mate-theme.sh
+[ -f $HOME/.post-init-flatpak.sh ] && chmod +x $HOME/.post-init-flatpak.sh

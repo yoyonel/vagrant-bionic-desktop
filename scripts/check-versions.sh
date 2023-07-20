@@ -92,4 +92,9 @@ test_command "hardinfo --version | head -n 1"
 
 test_command "brave-browser --version"
 test_command "lynx --version | head -n 1"
+
+test_command "flatpak list | grep 'Signal Desktop'"
+test_command "flatpak list | grep 'teams-for-linux'"
+test_command "flatpak list | grep 'spotify'"
+test_command "flatpak list | grep 'Discord'"
 # set +e

@@ -2,6 +2,7 @@
 set -ex
 
 sh .post-init-mate-theme.sh
+sh .post-init-flatpak.sh
 
 # pyenv
 figlet "Python 3.9.4"

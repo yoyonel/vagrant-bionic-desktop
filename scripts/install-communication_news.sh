@@ -17,19 +17,6 @@ else
 	echo "brave-broswer: skip"
 fi
 
-figlet "SIGNAL"
-# https://www.signal.org/fr/download/#
-if ! command_exists signal-desktop; then
-	wget -q -O- https://updates.signal.org/desktop/apt/keys.asc | gpg --dearmor >signal-desktop-keyring.gpg
-	sudo mv signal-desktop-keyring.gpg /usr/share/keyrings/
-	if [ ! -f /etc/apt/sources.list.d/signal-xenial.list ]; then
-		echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/signal-desktop-keyring.gpg] https://updates.signal.org/desktop/apt xenial main' |
-			sudo tee -a /etc/apt/sources.list.d/signal-xenial.list
-	fi
-	# sudo rm -rf /var/lib/apt/lists/*
-	sudo apt-get update && sudo apt-get -y install signal-desktop
-fi
-
 figlet "DISCORD"
 if false and ! command_exists discord; then
 	# FIX: can't download the Appimage !
