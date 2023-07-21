@@ -44,7 +44,7 @@ else
 	echo "TMUX already installed -> SKIP"
 fi
 # bc: use by tmux-plugins/tmux-docker
-if ! command_exists bc; then 
+if ! command_exists bc; then
 	sudo apt-get -y install bc
 else
 	echo "BC already installed -> SKIP"
@@ -53,7 +53,7 @@ fi
 if [ ! -f "$HOME/.tmux/.tmux.conf" ]; then
 	git clone https://github.com/gpakosz/.tmux.git $HOME/.tmux
 fi
-if [ ! -f "$HOME/.tmux.conf" ]; then	
+if [ ! -f "$HOME/.tmux.conf" ]; then
 	ln -sf .tmux/.tmux.conf .
 	cp .tmux/.tmux.conf.local .
 fi
@@ -123,14 +123,14 @@ if ! command_exists tree; then
 fi
 
 figlet "X[CLIP&SEL]"
-if ! command_exists xclip; then 
+if ! command_exists xclip; then
 	sudo apt-get -y install xclip xsel
 fi
 
 figlet "BAT"
 if ! command_exists bat; then
 	wget -q https://github.com/sharkdp/bat/releases/download/v0.18.0/bat_0.18.0_amd64.deb -O /tmp/bat_0.18.0_amd64.deb
-	sudo dpkg -i /tmp/bat_0.18.0_amd64.deb	
+	sudo dpkg -i /tmp/bat_0.18.0_amd64.deb
 else
 	echo "bat already installed -> SKIP"
 fi
@@ -217,20 +217,14 @@ if ! command_exists gotop; then
 fi
 
 figlet "SPEEDTEST"
-# TODO: https://www.speedtest.net/apps/cli
-if false and ! command_exists speedtest; then
-	curl -s https://install.speedtest.net/app/cli/install.deb.sh | sudo bash
-	# E: Unable to locate package speedtest
-	#   The following signatures couldn't be verified because the public key is not available: NO_PUBKEY 8E61C2AB9A6D1557
+if ! command_exists speedtest; then
+	# https://www.speedtest.net/apps/cli
+	curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | sudo bash
 	sudo apt-get -y install speedtest
 else
 	echo "speedtest already installed -> SKIP"
 fi
 
 figlet "PARALLEL"
-# if ! command_exists parallel; then
 # need `parallel` from parallel package not from more-utils
 sudo apt-get -y install parallel
-# else
-# 	echo "parallel already installed -> SKIP"
-# fi

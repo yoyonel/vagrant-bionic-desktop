@@ -65,7 +65,6 @@ test_command "ncdu --version"
 test_command "duf --version"
 test_command "nmap --version | head -n 1"
 test_command "speedtest --version | head -n 1"
-test_command "parallel --version | head -n 1"
 
 test_command "mate-about --version"
 test_command "systemctl show lightdm.service --no-page | grep 'SubState=' | cut -f2 -d="
