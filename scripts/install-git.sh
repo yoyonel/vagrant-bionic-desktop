@@ -46,7 +46,7 @@ if ! command_exists gita; then
 	# https://github.com/nosarthur/gita
 	pipx install gita
 	mkdir -p $HOME/.config/gita
-	curl -fsSL https://raw.githubusercontent.com/nosarthur/gita/master/.gita-completion.zsh -o $HOME/.config/gita/.gita-completion.zsh
+	curl -fsSL https://github.com/nosarthur/gita/raw/master/auto-completion/zsh/.gita-completion.zsh -o $HOME/.config/gita/.gita-completion.zsh
 else
 	echo "gita already installed -> SKIP"
 fi

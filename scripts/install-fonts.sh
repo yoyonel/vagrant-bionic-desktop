@@ -14,7 +14,7 @@ if [ $(fc-list | grep "Source Code Pro for Powerline" | wc -l) -eq 0 ]; then
 	mkdir -p $HOME/.local/share/fonts
 
 	wget \
-		https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/SourceCodePro/Regular/SauceCodeProNerdFont-Regular.ttf \
+		https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/SourceCodePro/SauceCodeProNerdFont-Regular.ttf \
 		-O "$HOME/.local/share/fonts/Source Code Pro for Powerline.otf"
 
 	fc-cache -fv
