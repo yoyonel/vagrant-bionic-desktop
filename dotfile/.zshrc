@@ -4,8 +4,11 @@ export EDITOR="vim"
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
 
-source $HOME/.powerlevel9k
-ZSH_THEME="powerlevel9k/powerlevel9k"
+# source $HOME/.powerlevel9k
+# ZSH_THEME="powerlevel9k/powerlevel9k"
+
+source $HOME/.p10k.zsh
+ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/emoji
 # https://github.com/jamespeapen/forgit

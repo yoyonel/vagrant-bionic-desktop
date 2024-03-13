@@ -7,6 +7,8 @@ ls scripts/
 
 source scripts/.tools.sh
 
+. scripts/.pre-init.sh
+
 . scripts/install-apt-full.sh
 . scripts/install-flatpak.sh
 . scripts/install-common.sh

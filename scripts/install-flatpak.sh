@@ -7,7 +7,7 @@
 figlet "FlatPak"
 if ! command_exists flatpak; then
 	# https://flatpak.org/setup/Debian
-	sudo apt install -y flatpak
+	sudo apt-get install -y flatpak
 	sudo flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 	# sudo shutdown -r now
 else

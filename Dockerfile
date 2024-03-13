@@ -15,6 +15,9 @@ RUN groupadd --gid $USER_GID $USERNAME \
     && echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME \
     && chmod 0440 /etc/sudoers.d/$USERNAME
 
+# Use "bash" as replacement for	"sh"
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
 # ********************************************************
 # * Anything else you want to do like clean up goes here *
 # ********************************************************
@@ -31,29 +34,45 @@ COPY install_from_server.sh /home/$USERNAME/install_from_server.sh
 
 RUN mkdir -p .local/share/wallpapers
 
-RUN . scripts/.tools.sh
-
+RUN . scripts/.pre-init.sh
 RUN . scripts/install-apt-full.sh
-RUN . scripts/install-flatpak.sh
+
+RUN source scripts/.tools.sh && . scripts/install-flatpak.sh
 RUN . scripts/install-common.sh
 # . scripts/install-desktop.sh
-RUN . scripts/install-python.sh
-RUN . scripts/install-git.sh
-RUN . scripts/install-cli.sh
-RUN . scripts/install-audio_video.sh
-RUN . scripts/install-communication_news.sh
-RUN . scripts/install-utilities.sh
-RUN . scripts/install-graphics_photography.sh
-RUN . scripts/install-windows_manager.sh
-RUN . scripts/install-dconf.sh
+RUN source scripts/.tools.sh && . scripts/install-python.sh
+RUN source scripts/.tools.sh && . scripts/install-git.sh
+RUN source scripts/.tools.sh && . scripts/install-cli.sh
+RUN source scripts/.tools.sh && . scripts/install-audio_video.sh
+RUN source scripts/.tools.sh && . scripts/install-communication_news.sh
+RUN source scripts/.tools.sh && . scripts/install-utilities.sh
+RUN source scripts/.tools.sh && . scripts/install-graphics_photography.sh
+RUN source scripts/.tools.sh && . scripts/install-windows_manager.sh
+RUN source scripts/.tools.sh && . scripts/install-dconf.sh
 # . scripts/install-system.sh
-RUN .  scripts/install-system-and-tools.sh
+RUN source scripts/.tools.sh && . scripts/install-system-and-tools.sh
 # installation doesn't work with debian 12 (on virtual machine) 
 # . scripts/install-virtualbox.sh
-RUN .  scripts/install-ide.sh
-RUN .  scripts/install-fonts.sh
+RUN source scripts/.tools.sh && . scripts/install-ide.sh
+RUN source scripts/.tools.sh && . scripts/install-fonts.sh
 # System has not been booted with systemd as init system (PID 1). Can't operate.
 # Failed to connect to bus: Host is down
 # RUN .  scripts/install-keyboard.sh
 # . scripts/install-nfs_synology.sh
 # RUN .  scripts/install-post_init.sh
+
+COPY scripts/check-versions.sh /home/$USERNAME/check-versions.sh
+
+COPY "dotfile/.profile" "/home/vagrant/.profile"
+COPY "dotfile/.gitconfig" "/home/vagrant/.gitconfig"
+COPY "dotfile/.zshrc" "/home/vagrant/.zshrc"
+# # COPY "dotfile/.tmux.conf" "/home/vagrant/.tmux.conf.local"
+COPY "dotfile/.powerlevel9k" "/home/vagrant/.powerlevel9k"
+COPY "dotfile/alacritty.yml" "/home/vagrant/.config/alacritty/alacritty.yml"
+# COPY "dotfile/dconf.ini" "/home/vagrant/.config/dconf/dconf.ini"
+# COPY "dotfile/rc.conf" "/home/vagrant/.config/ranger/rc.conf"
+
+RUN git clone --depth=1 https://github.com/romkatv/powerlevel10k.git /home/vagrant/.oh-my-zsh/custom/themes/powerlevel10k
+    # && sed -i.bak 's/powerlevel9k/powerlevel10k/g' ~/.zshrc
+
+COPY "dotfile/.p10k.zsh" "/home/vagrant/.p10k.zsh"

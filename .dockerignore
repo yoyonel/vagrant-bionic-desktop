@@ -1,0 +1,9 @@
+# Ignore everything
+*
+
+# Allow files and directories
+!/scripts
+!/dotfile
+!/data
+!install_from_server.sh
+!full-install.sh
