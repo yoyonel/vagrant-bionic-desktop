@@ -3,7 +3,7 @@
 DIR := $(shell realpath .)
 
 .PHONY: all
-all: build_or_update docker	## Build vagrant box and docker image
+all: vagrant-build_or_update docker-build	## Build vagrant box and docker image
 
 .PHONY: vagrant-ssh
 vagrant-ssh: ## Launch a SSH connection on vagrant box
@@ -17,7 +17,7 @@ vagrant-tests: ## Launch versions checking on vagrant box
 vagrant-rebuild: ## ReBuild from scratch vagrant box
 	@./rebuild.sh
 
-.PHONY: build_or_update
+.PHONY: vagrant-build_or_update
 vagrant-build_or_update: ## Build Or Update vagrant box
 	@./build_or_update.sh
 

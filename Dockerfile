@@ -67,12 +67,12 @@ COPY "dotfile/.profile" "/home/vagrant/.profile"
 COPY "dotfile/.gitconfig" "/home/vagrant/.gitconfig"
 COPY "dotfile/.zshrc" "/home/vagrant/.zshrc"
 # # COPY "dotfile/.tmux.conf" "/home/vagrant/.tmux.conf.local"
-COPY "dotfile/.powerlevel9k" "/home/vagrant/.powerlevel9k"
+# COPY "dotfile/.powerlevel9k" "/home/vagrant/.powerlevel9k"
 COPY "dotfile/alacritty.yml" "/home/vagrant/.config/alacritty/alacritty.yml"
 # COPY "dotfile/dconf.ini" "/home/vagrant/.config/dconf/dconf.ini"
 # COPY "dotfile/rc.conf" "/home/vagrant/.config/ranger/rc.conf"
 
-RUN git clone --depth=1 https://github.com/romkatv/powerlevel10k.git /home/vagrant/.oh-my-zsh/custom/themes/powerlevel10k
+RUN if [ ! -d /home/vagrant/.oh-my-zsh/custom/themes/powerlevel10k ]; then git clone --depth=1 https://github.com/romkatv/powerlevel10k.git /home/vagrant/.oh-my-zsh/custom/themes/powerlevel10k; fi
     # && sed -i.bak 's/powerlevel9k/powerlevel10k/g' ~/.zshrc
 
 COPY "dotfile/.p10k.zsh" "/home/vagrant/.p10k.zsh"
