@@ -36,20 +36,21 @@ if [ ! -f $HOME/.config/nvim/init.vim ]; then
 fi
 
 figlet "VSCODE"
-if ! command_exists code; then
+# if ! command_exists code; then
+if false; then
 	sudo apt-get -y install software-properties-common apt-transport-https curl
 	curl -sSL https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
 	sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
 	# sudo rm -rf /var/lib/apt/lists/*
 	sudo apt-get update && sudo apt-get -y install code
+
+	if [ ! "$(code --list-extensions | grep 'Shan.code-settings-sync')" ]; then
+		figlet "Shan.code-settings-sync"
+		# https://code.visualstudio.com/docs/editor/extension-marketplace#_command-line-extension-management
+		code --install-extension Shan.code-settings-sync
+	fi
 else
 	echo "vs code alread installed -> SKIP"
-fi
-
-if [ ! "$(code --list-extensions | grep 'Shan.code-settings-sync')" ]; then
-	figlet "Shan.code-settings-sync"
-	# https://code.visualstudio.com/docs/editor/extension-marketplace#_command-line-extension-management
-	code --install-extension Shan.code-settings-sync
 fi
 
 figlet "PYCHARM"

@@ -1,4 +1,4 @@
 #!/bin/sh
 set -ex
 
-vagrant up --provision
+vagrant up --provision --timestamp

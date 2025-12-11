@@ -8,7 +8,8 @@
 #
 ##########################
 figlet "APT: FULL"
-sudo apt-get -y --fix-broken install &&
+sudo dpkg --configure -a && 
+	sudo apt-get -y --fix-broken install &&
     sudo apt-get update &&
     sudo apt-get -y upgrade &&
     sudo apt-get -y dist-upgrade &&
