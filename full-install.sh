@@ -21,6 +21,7 @@ source scripts/.tools.sh
 . scripts/install-utilities.sh
 . scripts/install-graphics_photography.sh
 . scripts/install-windows_manager.sh
+. scripts/install-i3-stack.sh
 . scripts/install-dconf.sh
 . scripts/install-system.sh
 . scripts/install-system-and-tools.sh

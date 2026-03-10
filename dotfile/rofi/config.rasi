@@ -1,0 +1,105 @@
+/* Rofi config — Nordic theme */
+/* https://github.com/davatorium/rofi/blob/next/CONFIG.md */
+
+* {
+    bg:         #2E3440;
+    bg-alt:     #3B4252;
+    bg-sel:     #434C5E;
+    fg:         #ECEFF4;
+    fg-dim:     #D8DEE9;
+    accent:     #88C0D0;
+    accent2:    #81A1C1;
+    urgent:     #BF616A;
+
+    background-color: transparent;
+    text-color:       @fg;
+}
+
+configuration {
+    modi:                   "drun,run,window";
+    show-icons:             true;
+    icon-theme:             "Zafiro-Icons";
+    drun-display-format:    "{name}";
+    window-format:          "{w} · {c}";
+    font:                   "SauceCodePro Nerd Font 11";
+    disable-history:        false;
+    sidebar-mode:           false;
+}
+
+window {
+    width:            500px;
+    background-color: @bg;
+    border:           2px solid;
+    border-color:     @accent;
+    border-radius:    8px;
+    padding:          0;
+}
+
+mainbox {
+    background-color: transparent;
+    children:         [ inputbar, listview ];
+    spacing:          0;
+    padding:          10px;
+}
+
+inputbar {
+    background-color: @bg-alt;
+    border-radius:    6px;
+    padding:          10px 12px;
+    margin:           0 0 8px 0;
+    children:         [ prompt, entry ];
+    spacing:          0;
+}
+
+prompt {
+    background-color: transparent;
+    text-color:       @accent;
+    padding:          0 8px 0 0;
+}
+
+entry {
+    background-color: transparent;
+    text-color:       @fg;
+    placeholder:      "Rechercher...";
+    placeholder-color: @fg-dim;
+}
+
+listview {
+    background-color: transparent;
+    lines:            8;
+    columns:          1;
+    fixed-height:     true;
+    scrollbar:        false;
+    spacing:          2px;
+}
+
+element {
+    background-color: transparent;
+    padding:          8px 10px;
+    border-radius:    4px;
+    spacing:          8px;
+    children:         [ element-icon, element-text ];
+}
+
+element selected.normal {
+    background-color: @accent;
+    text-color:       @bg;
+}
+
+element normal.urgent,
+element selected.urgent {
+    background-color: @urgent;
+    text-color:       @fg;
+}
+
+element-icon {
+    background-color: transparent;
+    size:             24px;
+    vertical-align:   0.5;
+}
+
+element-text {
+    background-color: transparent;
+    text-color:       inherit;
+    vertical-align:   0.5;
+}
