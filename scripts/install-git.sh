@@ -7,6 +7,17 @@
 #  \_____|_____|  |_|
 #
 ########################
+
+# pipx is required by pre-commit and gita — install if missing
+# (install-python.sh handles it in full mode; this covers minimal mode)
+if ! command_exists pipx; then
+	figlet "PIPX (bootstrap)"
+	sudo apt-get -y install pipx
+	pipx ensurepath
+	# make pipx-installed bins available for the rest of this script
+	export PATH="$PATH:$HOME/.local/bin"
+fi
+
 figlet "PRE-COMMIT"
 if ! command_exists pre-commit; then
 	if command_exists pipx; then

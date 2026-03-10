@@ -42,7 +42,7 @@ fi
 
 figlet "TMUX"
 if ! command_exists tmux; then
-	sudo apt install -y tmux
+	sudo apt-get install -y tmux
 else
 	echo "TMUX already installed -> SKIP"
 fi
@@ -162,11 +162,17 @@ if ! command_exists rsync; then
 fi
 
 figlet "TLDR"
+# tealdeer: fast Rust tldr client (replaces broken tldr-hs from Debian repos)
+# https://github.com/dbrgn/tealdeer
 if ! command_exists tldr; then
-	sudo apt-get -y install tldr
+	TLDR_VERSION="v1.6.1"
+	wget -q "https://github.com/dbrgn/tealdeer/releases/download/${TLDR_VERSION}/tealdeer-linux-x86_64-musl" \
+		-O /tmp/tealdeer
+	sudo install -m 755 /tmp/tealdeer /usr/local/bin/tldr
+	rm -f /tmp/tealdeer
 fi
-
-tldr tldr >/dev/null
+# Pre-fetch the cache (tolerate failure in restricted envs)
+tldr --update >/dev/null 2>&1 || true
 
 figlet "NCDU"
 # https://dev.yorhel.nl/ncdu
