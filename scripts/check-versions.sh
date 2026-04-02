@@ -96,4 +96,40 @@ test_command "flatpak list | grep 'Signal Desktop'"
 test_command "flatpak list | grep 'teams-for-linux'"
 test_command "flatpak list | grep 'spotify'"
 test_command "flatpak list | grep 'Discord'"
+
+# ── VirtualBox Guest Additions integrity checks ───────────────────────────────
+# These tests verify that GA are installed, functional, and version-matched
+# with the host. Run from the host via: vagrant_tests.sh
+echo ""
+echo "── VirtualBox Guest Additions ──────────────────────────────────────────"
+
+# 1. VBoxService is present and responds
+test_command "/usr/sbin/VBoxService --version"
+
+# 2. GA version matches VBOX_HOST_VERSION (injected from host via env)
+#    If not set, skip the comparison gracefully.
+if [ -n "$VBOX_HOST_VERSION" ]; then
+	GA_INSTALLED=$(/usr/sbin/VBoxService --version 2>/dev/null | sed 's/r.*//')
+	if [ "$GA_INSTALLED" = "$VBOX_HOST_VERSION" ]; then
+		echo -e "✅ GA version matches host VBox: ${GREEN}${GA_INSTALLED}${NC}"
+	else
+		echo -e "❌ GA version mismatch: guest=${RED}${GA_INSTALLED}${NC} host=${RED}${VBOX_HOST_VERSION}${NC}"
+	fi
+else
+	echo "⚠️  VBOX_HOST_VERSION not set — skipping version match check"
+fi
+
+# 3. vboxadd service is active (kernel module loader + userspace tools)
+#    Note: VBoxLinuxAdditions.run installs two units: vboxadd + vboxadd-service
+test_command "systemctl is-active vboxadd"
+
+# 4. Kernel module is loaded
+test_command "lsmod | grep -q vboxguest && echo 'vboxguest module loaded'"
+
+# 5. VBoxClient-all launch (provides resize/clipboard/seamless)
+#    Check the process is running (started by i3 autostart)
+test_command "pgrep -a VBoxClient | head -3"
+
+# 6. xrandr confirms dynamic resize is available (VBoxVGA driver active)
+test_command "DISPLAY=:0 xrandr | grep -q 'Virtual1 connected' && echo 'xrandr: Virtual1 connected (resize capable)'"
 # set +e

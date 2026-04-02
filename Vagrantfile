@@ -10,6 +10,11 @@
 INSTALL_MODE = ENV.fetch("INSTALL_MODE", "minimal")
 INSTALL_SCRIPT = INSTALL_MODE == "full" ? "full-install.sh" : "full-install-minimal.sh"
 
+# Detect host VirtualBox version (e.g. "7.2.6") — injected into the VM provisioner
+# so it can download the matching GuestAdditions ISO from the Oracle CDN.
+# Strip the revision suffix (e.g. "7.2.6r172322" -> "7.2.6").
+VBOX_VERSION = `VBoxManage --version 2>/dev/null`.strip.sub(/r.*/, '')
+
 Vagrant.configure("2") do |config|
   # https://app.vagrantup.com/debian/boxes/bullseye64/versions/11.20221219.1
   config.vm.box = "debian/bookworm64"
@@ -18,14 +23,12 @@ Vagrant.configure("2") do |config|
   # config.vm.box_version = "12.20231211.1"
   # config.vm.box_version = "11.20221219.1"
 
-  # vagrant-vbguest: keep auto_update disabled — the GA version mismatch
-  # (6.0.0 vs 7.2) is non-critical for our use case (no shared folders).
-  # Auto-compilation is disabled because it runs before apt-get update,
-  # causing linux-headers lookup failures on a fresh box.
-  # Configuration pour vagrant-vbguest
+  # vagrant-vbguest: keep auto_update disabled.
+  # Our provisioner installs GA at the correct time (after apt-get update)
+  # using the Oracle CDN ISO matching the host VBox version exactly.
+  # Auto-compile here would run before apt-get update → linux-headers failure.
   if Vagrant.has_plugin?("vagrant-vbguest")
     config.vbguest.auto_update = false
-    config.vbguest.no_remote = true # Utilise l'ISO locale de VirtualBox
   end
 
   # Optional - enlarge disk (will also convert the format from VMDK to VDI):l
@@ -71,7 +74,10 @@ Vagrant.configure("2") do |config|
   config.vm.provision "file", source: "scripts/.post-init-mate-theme.sh", destination: "/home/vagrant/.post-init-mate-theme.sh"
   config.vm.provision "file", source: "scripts/.post-init-flatpak.sh", destination: "/home/vagrant/.post-init-flatpak.sh"
   #
-  config.vm.provision "shell", privileged: false, path: INSTALL_SCRIPT
+  config.vm.provision "shell",
+    privileged: false,
+    path: INSTALL_SCRIPT,
+    env: { "VBOX_VERSION" => VBOX_VERSION }
   #
   config.vm.provision "file", source: "dotfile/.profile", destination: "/home/vagrant/.profile"
   config.vm.provision "file", source: "dotfile/.gitconfig", destination: "/home/vagrant/.gitconfig"

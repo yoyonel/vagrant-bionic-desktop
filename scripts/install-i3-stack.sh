@@ -47,19 +47,52 @@ sudo apt-get -y install \
 
 figlet "VBOX GUEST"
 # VirtualBox Guest Additions — required for VBoxClient-all (resize/fullscreen)
-# Uses the Debian-packaged ISO (contrib/non-free) + compiles via DKMS.
+#
+# Strategy: download the ISO directly from Oracle CDN using the host VBox version
+# injected by the Vagrantfile as $VBOX_VERSION. This guarantees an exact version
+# match (guest GA == host VBox), avoiding the Debian-packaged ISO (7.0.6) mismatch.
+#
 # VBoxClient-all is called via exec in i3/config at session start.
-if ! /usr/sbin/VBoxService --version &>/dev/null; then
+# Idempotent: skipped if VBoxService version already matches $VBOX_VERSION.
+
+GA_VERSION="${VBOX_VERSION:-7.0.6}"
+GA_ISO_URL="https://download.virtualbox.org/virtualbox/${GA_VERSION}/VBoxGuestAdditions_${GA_VERSION}.iso"
+GA_ISO_PATH="/tmp/VBoxGuestAdditions_${GA_VERSION}.iso"
+
+INSTALLED_GA=$(VBoxService --version 2>/dev/null | sed 's/r.*//' || echo 'none')
+
+if [ "$INSTALLED_GA" = "$GA_VERSION" ]; then
+	echo "VBoxGuestAdditions ${GA_VERSION} already installed -> SKIP"
+else
+	echo "Installing VBoxGuestAdditions ${GA_VERSION} (currently: ${INSTALLED_GA})"
+
+	# Build toolchain (headers for current kernel)
 	sudo apt-get install -y \
-		virtualbox-guest-additions-iso \
 		build-essential \
 		linux-headers-$(uname -r)
+
+	# Download ISO from Oracle CDN
+	wget -q --show-progress -O "$GA_ISO_PATH" "$GA_ISO_URL"
+
+	# Verify ISO is readable (basic sanity check — aborts if download was truncated)
+	file "$GA_ISO_PATH" | grep -q 'ISO 9660' || { echo "ERROR: downloaded file is not a valid ISO"; exit 1; }
+
+	# Mount + install
 	sudo mkdir -p /mnt/ga-iso
-	sudo mount -o loop /usr/share/virtualbox/VBoxGuestAdditions.iso /mnt/ga-iso
+	sudo mount -o loop "$GA_ISO_PATH" /mnt/ga-iso
 	sudo /mnt/ga-iso/VBoxLinuxAdditions.run --nox11 || true
 	sudo umount /mnt/ga-iso
-else
-	echo "VBoxGuestAdditions already installed -> SKIP"
+	rm -f "$GA_ISO_PATH"
+
+	# Enable services (VBoxLinuxAdditions.run does not enable them automatically)
+	sudo systemctl enable vboxadd vboxadd-service 2>/dev/null || true
+
+	# Post-install sanity check
+	if /usr/sbin/VBoxService --version &>/dev/null; then
+		echo "VBoxGuestAdditions installed: $(/usr/sbin/VBoxService --version)"
+	else
+		echo "WARNING: VBoxService not found after install — check kernel module"
+	fi
 fi
 
 figlet "I3: DEFAULT SESSION"
