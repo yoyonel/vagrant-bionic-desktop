@@ -2,6 +2,8 @@ name: build-vagrant-box [dev]
 
 on:
   push:
+    branches:
+      - develop
   # https://jasonet.co/posts/scheduled-actions/
   schedule:
     # https://crontab.guru/once-a-day
@@ -9,18 +11,16 @@ on:
 
 jobs:
   build-vagrant-box:
-    # https://github.com/jonashackt/vagrant-github-actions
-    # runs-on: macos-latest
-    runs-on: macos-10.15
+    runs-on: macos-latest
     # https://docs.github.com/fr/actions/using-workflows/workflow-syntax-for-github-actions#permissions
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
         with:
-          ref: develop 
+          ref: develop
       - name: Cache Vagrant boxes
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: ~/.vagrant.d/boxes
           key: ${{ runner.os }}-vagrant-${{ hashFiles('Vagrantfile') }}
@@ -53,7 +53,7 @@ jobs:
 
       - name: Archive exported logs
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: logs
           path: log/*.log
@@ -65,7 +65,7 @@ jobs:
       # https://stackoverflow.com/questions/57498605/github-actions-share-workspace-artifacts-between-jobs
       # https://docs.github.com/fr/actions/using-workflows/storing-workflow-data-as-artifacts
       - name: Archive exported VMs box
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: vagrant-box
           path: output/box/*.box
