@@ -66,8 +66,8 @@ Vagrant.configure("2") do |config|
 
   # UI Ressources: Themes, Wallpapers
   config.vm.provision "file", source: "data/Mate_M013_4K.png", destination: ".local/share/wallpapers/Mate_M013_4K.png"
-  config.vm.provision "file", source: "data/Nordic-darker.tar.xz", destination: "/tmp/Nordic-darker.tar.xz"
-  config.vm.provision "file", source: "data/Zafiro-Icons.tar.xz", destination: "/tmp/Zafiro-Icons.tar.xz"
+  config.vm.provision "file", source: "data/Nordic-darker.tar.xz", destination: "/home/vagrant/Nordic-darker.tar.xz"
+  config.vm.provision "file", source: "data/Zafiro-Icons.tar.xz", destination: "/home/vagrant/Zafiro-Icons.tar.xz"
   #
   config.vm.provision "file", source: "scripts/", destination: "/home/vagrant/scripts"
   config.vm.provision "file", source: "scripts/.post-init.sh", destination: "/home/vagrant/.post-init.sh"

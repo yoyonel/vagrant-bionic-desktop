@@ -10,13 +10,13 @@
 figlet "THEME: NORDIC"
 if [ ! -d /usr/share/themes/Nordic-darker ]; then
 	sudo mkdir -p /usr/share/themes/
-	sudo tar -xf /tmp/Nordic-darker.tar.xz -C /usr/share/themes
+	sudo tar -xf "$HOME/Nordic-darker.tar.xz" -C /usr/share/themes
 fi
 
 figlet "ICONS: ZAFIRO"
 if [ ! -d /usr/share/icons/Zafiro-Icons ]; then
 	sudo mkdir -p /usr/share/icons
-	sudo tar -xf /tmp/Zafiro-Icons.tar.xz -C /usr/share/icons
+	sudo tar -xf "$HOME/Zafiro-Icons.tar.xz" -C /usr/share/icons
 fi
 
 figlet "WALLPAPER"
