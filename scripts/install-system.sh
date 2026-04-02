@@ -55,9 +55,15 @@ fi
 
 figlet "VAGRANT"
 if ! command_exists vagrant; then
-	# https://www.vagrantup.com/downloads
-	[ ! -f /tmp/vagrant_2.2.16_x86_64.deb ] && wget -q https://releases.hashicorp.com/vagrant/2.2.16/vagrant_2.2.16_x86_64.deb -O /tmp/vagrant_2.2.16_x86_64.deb
-	sudo dpkg -i /tmp/vagrant_2.2.16_x86_64.deb
+	# https://developer.hashicorp.com/vagrant/install
+	# Version to install — update here when a new release is available
+	VAGRANT_VERSION="2.4.3"
+	VAGRANT_DEB="/tmp/vagrant_${VAGRANT_VERSION}_amd64.deb"
+	[ ! -f "$VAGRANT_DEB" ] && wget -q \
+		"https://releases.hashicorp.com/vagrant/${VAGRANT_VERSION}/vagrant_${VAGRANT_VERSION}-1_amd64.deb" \
+		-O "$VAGRANT_DEB"
+	sudo dpkg -i "$VAGRANT_DEB"
+	rm -f "$VAGRANT_DEB"
 else
 	echo "vagrant already installed -> SKIP"
 fi

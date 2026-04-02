@@ -2,3 +2,9 @@
 /log.txt
 /ubuntu-bionic-18.04-cloudimg-console.log
 /output
+
+# Large binaries — never commit these, download at provision/install time
+# vagrant .deb: downloaded by scripts/install-system.sh from releases.hashicorp.com
+# vbox-extpack: installed manually on the HOST via VirtualBox GUI or VBoxManage
+*.deb
+*.vbox-extpack
