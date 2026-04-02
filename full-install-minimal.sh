@@ -25,6 +25,7 @@ source scripts/.tools.sh
 . scripts/install-common.sh
 . scripts/install-git.sh
 . scripts/install-cli.sh
+. scripts/install-python.sh
 
 # Graphical stack: LightDM + i3 + Polybar + Kitty + Rofi (no MATE)
 . scripts/install-windows_manager.sh
