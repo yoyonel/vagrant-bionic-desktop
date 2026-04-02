@@ -74,6 +74,17 @@ Vagrant.configure("2") do |config|
   config.vm.provision "file", source: "scripts/.post-init-mate-theme.sh", destination: "/home/vagrant/.post-init-mate-theme.sh"
   config.vm.provision "file", source: "scripts/.post-init-flatpak.sh", destination: "/home/vagrant/.post-init-flatpak.sh"
   #
+  # Kernel upgrade — must run BEFORE the main provisioner and BEFORE GA compilation.
+  # The debian/bookworm64 box ships with an old kernel (e.g. 6.1.0-29) whose headers
+  # have been removed from Debian apt repos. Installing linux-image-amd64 upgrades
+  # to the latest available kernel (e.g. 6.1.0-44). The :reload below reboots the VM
+  # so that uname -r matches the available headers when VBoxLinuxAdditions.run compiles.
+  config.vm.provision "shell", privileged: true, name: "kernel-upgrade", inline: <<-SHELL
+    apt-get update -q
+    apt-get install -y linux-image-amd64
+  SHELL
+  config.vm.provision :reload
+  #
   config.vm.provision "shell",
     privileged: false,
     path: INSTALL_SCRIPT,

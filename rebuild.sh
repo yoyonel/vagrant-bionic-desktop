@@ -7,6 +7,7 @@ export VAGRANT_DISABLE_STRICT_DEPENDENCY_ENFORCEMENT=1
 # Install plugins only if missing (skip if already installed)
 vagrant plugin list | grep -q vagrant-vbguest  || vagrant plugin install vagrant-vbguest
 vagrant plugin list | grep -q vagrant-timezone || vagrant plugin install vagrant-timezone
+vagrant plugin list | grep -q vagrant-reload   || vagrant plugin install vagrant-reload
 
 vagrant destroy --force && vagrant up
 
