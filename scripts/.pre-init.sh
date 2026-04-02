@@ -28,6 +28,10 @@ sudo timedatectl set-ntp true
 sudo systemctl enable --now systemd-timesyncd 2>/dev/null || true
 # ─────────────────────────────────────────────────────────────────────────
 
+# Enable contrib + non-free — required for virtualbox-guest-additions-iso
+# (needed for VBoxClient-all to provide dynamic screen resize in VM)
+sudo sed -i 's/^deb https:\/\/deb.debian.org\/debian bookworm main$/deb https:\/\/deb.debian.org\/debian bookworm main contrib non-free non-free-firmware/' /etc/apt/sources.list
+
 sudo apt-get clean && sudo apt-get update
 
 # Nala — parallel package downloads (replaces apt-get install transparently)

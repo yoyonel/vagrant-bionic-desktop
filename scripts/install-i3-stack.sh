@@ -45,6 +45,23 @@ sudo apt-get -y install \
 	arandr \
 	x11-xserver-utils
 
+figlet "VBOX GUEST"
+# VirtualBox Guest Additions — required for VBoxClient-all (resize/fullscreen)
+# Uses the Debian-packaged ISO (contrib/non-free) + compiles via DKMS.
+# VBoxClient-all is called via exec in i3/config at session start.
+if ! /usr/sbin/VBoxService --version &>/dev/null; then
+	sudo apt-get install -y \
+		virtualbox-guest-additions-iso \
+		build-essential \
+		linux-headers-$(uname -r)
+	sudo mkdir -p /mnt/ga-iso
+	sudo mount -o loop /usr/share/virtualbox/VBoxGuestAdditions.iso /mnt/ga-iso
+	sudo /mnt/ga-iso/VBoxLinuxAdditions.run --nox11 || true
+	sudo umount /mnt/ga-iso
+else
+	echo "VBoxGuestAdditions already installed -> SKIP"
+fi
+
 figlet "I3: DEFAULT SESSION"
 sudo mkdir -p /etc/lightdm/lightdm.conf.d
 sudo bash -c 'printf "[Seat:*]\nuser-session=i3\n" > /etc/lightdm/lightdm.conf.d/10-i3.conf'

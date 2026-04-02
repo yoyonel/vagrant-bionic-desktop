@@ -22,8 +22,11 @@ Vagrant.configure("2") do |config|
   # (6.0.0 vs 7.2) is non-critical for our use case (no shared folders).
   # Auto-compilation is disabled because it runs before apt-get update,
   # causing linux-headers lookup failures on a fresh box.
-  config.vbguest.auto_update = false
-  config.vbguest.no_remote = true
+  # Configuration pour vagrant-vbguest
+  if Vagrant.has_plugin?("vagrant-vbguest")
+    config.vbguest.auto_update = false
+    config.vbguest.no_remote = true # Utilise l'ISO locale de VirtualBox
+  end
 
   # Optional - enlarge disk (will also convert the format from VMDK to VDI):l
   # config.disksize.size = "50GB"
@@ -51,8 +54,11 @@ Vagrant.configure("2") do |config|
     vb.customize ['modifyvm', :id, '--clipboard', 'bidirectional', '--graphicscontroller', 'vmsvga']
     # Set the video memory to 128Mb
     vb.customize ["modifyvm", :id, "--vram", "128"]
+    vb.customize ["modifyvm", :id, "--accelerate3d", "off"]
     # Allow the VM window to be freely resized (triggers guest resolution update)
     vb.customize ["setextradata", :id, "GUI/LastScaleFactors", ""]
+
+    vb.customize ["storageattach", :id, "--storagectl", "SATA Controller", "--port", "1", "--device", "0", "--type", "dvddrive", "--medium", "emptydrive"]
   end
 
   # UI Ressources: Themes, Wallpapers
