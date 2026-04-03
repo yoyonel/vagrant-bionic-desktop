@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - master
+  # Manual trigger from GitHub UI (Actions tab → Run workflow)
+  # Useful when macos-13 runners are unavailable and need a retry without a dummy commit
+  workflow_dispatch:
   # https://jasonet.co/posts/scheduled-actions/
   schedule:
     # https://crontab.guru/once-a-day

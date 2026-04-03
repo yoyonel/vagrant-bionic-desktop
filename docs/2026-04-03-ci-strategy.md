@@ -138,8 +138,63 @@ Vagrant ne serait plus utilisé en CI, seulement en local.
 
 | Fichier | Runner | VBox installé | Déclenchement |
 |---|---|---|---|
-| `build-vagrant-box.yml` | `macos-13` | ✅ `brew install --cask virtualbox` | push `master` + cron daily |
-| `build-vagrant-box-dev.yml` | `macos-13` | ✅ `brew install --cask virtualbox` | push `develop` + cron daily |
+| `build-vagrant-box.yml` | `macos-13` | ✅ `brew install --cask virtualbox` | push `master` + `workflow_dispatch` + cron daily |
+| `build-vagrant-box-dev.yml` | `macos-13` | ✅ `brew install --cask virtualbox` | push `develop` + `workflow_dispatch` + cron daily |
+
+---
+
+## Retour d'expérience — disponibilité des runners `macos-13` (2026-04-03)
+
+### Observation
+
+Après le premier push sur `develop` avec `macos-13`, les deux runs ont été
+`cancelled` **instantanément sans aucun step exécuté** :
+
+```
+23942204029  build-vagrant-box [dev]  completed  cancelled  labels: ['macos-13']
+23942051486  build-vagrant-box [dev]  completed  cancelled  labels: ['macos-13']
+```
+
+Le job demandait le runner `macos-13` mais aucun runner n'était disponible — GHA
+annule le job au lieu de le mettre en queue sur le plan free.
+
+### Cause
+
+Sur le **plan free GitHub Actions**, les runners `macos-13` (Intel) ont une
+disponibilité réduite comparée aux runners `ubuntu-latest`. Les jobs peuvent être
+annulés si :
+- La queue est saturée
+- L'allocation de runners Intel est épuisée dans la région
+
+### Solution de contournement ajoutée — `workflow_dispatch`
+
+Les deux workflows ont été enrichis avec le trigger `workflow_dispatch` :
+
+```yaml
+on:
+  push:
+    branches: [master]  # ou develop
+  workflow_dispatch:    # ← déclenchement manuel depuis l'UI GitHub
+  schedule:
+    - cron: "0 0 * * *"
+```
+
+**Pour relancer manuellement sans commit vide :**
+```
+GitHub → repo → Actions → "build-vagrant-box [dev]" → Run workflow → Branch: develop
+```
+
+Ou via CLI :
+```bash
+# [HOST]
+gh workflow run build-vagrant-box-dev.yml --ref develop
+```
+
+### Stratégie de retry
+
+Si le runner `macos-13` n'est pas disponible immédiatement :
+1. Attendre quelques heures et relancer via `workflow_dispatch`
+2. Le cron daily (`0 0 * * *`) retentera automatiquement chaque nuit
 
 ---
 
